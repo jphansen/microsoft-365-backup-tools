@@ -1,0 +1,20 @@
+[project]
+name = "microsoft-365-backup-tools"
+version = "1.0.0"
+description = "Backup tools for Microsoft 365 services including Dataverse and SharePoint"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "requests>=2.28.0",
+    "msal>=1.22.0",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.uv]
+# UV-specific configuration
+
+[tool.uv.sources]
+# Define where packages come from

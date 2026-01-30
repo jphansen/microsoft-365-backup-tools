@@ -222,16 +222,32 @@ class DataverseBackup:
         # Simplify metadata for readability
         simplified_tables = []
         for table in tables:
+            # Safely get DisplayName with nested access
+            display_name_obj = table.get('DisplayName')
+            display_name = None
+            if display_name_obj and isinstance(display_name_obj, dict):
+                user_localized_label = display_name_obj.get('UserLocalizedLabel')
+                if user_localized_label and isinstance(user_localized_label, dict):
+                    display_name = user_localized_label.get('Label')
+            
+            # Safely get Description with nested access
+            description_obj = table.get('Description')
+            description = None
+            if description_obj and isinstance(description_obj, dict):
+                desc_user_localized_label = description_obj.get('UserLocalizedLabel')
+                if desc_user_localized_label and isinstance(desc_user_localized_label, dict):
+                    description = desc_user_localized_label.get('Label')
+            
             simplified_tables.append({
                 'LogicalName': table.get('LogicalName'),
-                'DisplayName': table.get('DisplayName', {}).get('UserLocalizedLabel', {}).get('Label'),
+                'DisplayName': display_name,
                 'SchemaName': table.get('SchemaName'),
                 'IsCustomEntity': table.get('IsCustomEntity'),
                 'IsManaged': table.get('IsManaged'),
                 'PrimaryIdAttribute': table.get('PrimaryIdAttribute'),
                 'PrimaryNameAttribute': table.get('PrimaryNameAttribute'),
                 'EntitySetName': table.get('EntitySetName'),
-                'Description': table.get('Description', {}).get('UserLocalizedLabel', {}).get('Label')
+                'Description': description
             })
         
         with open(metadata_path, 'w', encoding='utf-8') as f:
@@ -257,7 +273,14 @@ class DataverseBackup:
         for idx, table in enumerate(tables, 1):
             logical_name = table.get('LogicalName')
             entity_set_name = table.get('EntitySetName')
-            display_name = table.get('DisplayName', {}).get('UserLocalizedLabel', {}).get('Label', logical_name)
+            
+            # Safely get DisplayName with nested access
+            display_name_obj = table.get('DisplayName')
+            display_name = logical_name  # default to logical name
+            if display_name_obj and isinstance(display_name_obj, dict):
+                user_localized_label = display_name_obj.get('UserLocalizedLabel')
+                if user_localized_label and isinstance(user_localized_label, dict):
+                    display_name = user_localized_label.get('Label', logical_name)
             
             if not entity_set_name:
                 logger.warning(f"Skipping {logical_name} - no EntitySetName")
@@ -326,16 +349,38 @@ class DataverseBackup:
             # Simplify attribute metadata
             simplified_attributes = []
             for attr in attributes:
+                # Safely get DisplayName with nested access
+                display_name_obj = attr.get('DisplayName')
+                display_name = None
+                if display_name_obj and isinstance(display_name_obj, dict):
+                    user_localized_label = display_name_obj.get('UserLocalizedLabel')
+                    if user_localized_label and isinstance(user_localized_label, dict):
+                        display_name = user_localized_label.get('Label')
+                
+                # Safely get RequiredLevel
+                required_level_obj = attr.get('RequiredLevel')
+                required_level = None
+                if required_level_obj and isinstance(required_level_obj, dict):
+                    required_level = required_level_obj.get('Value')
+                
+                # Safely get Description with nested access
+                description_obj = attr.get('Description')
+                description = None
+                if description_obj and isinstance(description_obj, dict):
+                    desc_user_localized_label = description_obj.get('UserLocalizedLabel')
+                    if desc_user_localized_label and isinstance(desc_user_localized_label, dict):
+                        description = desc_user_localized_label.get('Label')
+                
                 simplified_attributes.append({
                     'LogicalName': attr.get('LogicalName'),
                     'SchemaName': attr.get('SchemaName'),
-                    'DisplayName': attr.get('DisplayName', {}).get('UserLocalizedLabel', {}).get('Label'),
+                    'DisplayName': display_name,
                     'AttributeType': attr.get('AttributeType'),
                     'IsCustomAttribute': attr.get('IsCustomAttribute'),
                     'IsPrimaryId': attr.get('IsPrimaryId'),
                     'IsPrimaryName': attr.get('IsPrimaryName'),
-                    'RequiredLevel': attr.get('RequiredLevel', {}).get('Value'),
-                    'Description': attr.get('Description', {}).get('UserLocalizedLabel', {}).get('Label')
+                    'RequiredLevel': required_level,
+                    'Description': description
                 })
             
             return simplified_attributes
@@ -417,23 +462,43 @@ class DataverseBackup:
 
 def main():
     """Main entry point."""
-    # Configuration - Replace with your actual values or use environment variables
-    ENVIRONMENT_URL = os.environ.get('DATAVERSE_ENVIRONMENT_URL', 'https://org.crm.dynamics.com')
-    TENANT_ID = os.environ.get('DATAVERSE_TENANT_ID', 'your-tenant-id')
-    CLIENT_ID = os.environ.get('DATAVERSE_CLIENT_ID', 'your-client-id')
-    CLIENT_SECRET = os.environ.get('DATAVERSE_CLIENT_SECRET', 'your-client-secret')
+    # Configuration - Load from environment variables
+    ENVIRONMENT_URL = os.environ.get('DATAVERSE_ENVIRONMENT_URL')
+    TENANT_ID = os.environ.get('DATAVERSE_TENANT_ID')
+    CLIENT_ID = os.environ.get('DATAVERSE_CLIENT_ID')
+    CLIENT_SECRET = os.environ.get('DATAVERSE_CLIENT_SECRET')
     BACKUP_DIR = os.environ.get('BACKUP_DIR', 'backup')
     
     # Validate configuration
-    if 'your-tenant-id' in TENANT_ID or 'org.crm' in ENVIRONMENT_URL:
-        logger.error("Please configure the Dataverse credentials!")
-        logger.error("Set the following environment variables:")
-        logger.error("  DATAVERSE_ENVIRONMENT_URL - Dataverse environment URL (e.g., https://org.crm.dynamics.com)")
-        logger.error("  DATAVERSE_TENANT_ID - Azure AD Tenant ID")
-        logger.error("  DATAVERSE_CLIENT_ID - Azure AD App Client ID")
-        logger.error("  DATAVERSE_CLIENT_SECRET - Azure AD App Client Secret")
-        logger.error("  BACKUP_DIR (optional) - Backup directory path")
+    missing_vars = []
+    if not ENVIRONMENT_URL:
+        missing_vars.append('DATAVERSE_ENVIRONMENT_URL')
+    if not TENANT_ID:
+        missing_vars.append('DATAVERSE_TENANT_ID')
+    if not CLIENT_ID:
+        missing_vars.append('DATAVERSE_CLIENT_ID')
+    if not CLIENT_SECRET:
+        missing_vars.append('DATAVERSE_CLIENT_SECRET')
+    
+    if missing_vars:
+        logger.error("Missing required environment variables!")
+        logger.error("Please set the following environment variables:")
+        for var in missing_vars:
+            logger.error(f"  {var}")
+        logger.error("\nYou can set them in a .env.dataverse file and run with:")
+        logger.error("  uv run --env-file .env.dataverse dataverse_backup.py")
+        logger.error("\nOr set them directly:")
+        logger.error("  export DATAVERSE_ENVIRONMENT_URL=https://your-environment.crm.dynamics.com")
+        logger.error("  export DATAVERSE_TENANT_ID=your-tenant-id")
+        logger.error("  export DATAVERSE_CLIENT_ID=your-client-id")
+        logger.error("  export DATAVERSE_CLIENT_SECRET=your-client-secret")
         sys.exit(1)
+    
+    # Log configuration (without revealing secrets)
+    logger.info(f"Environment URL: {ENVIRONMENT_URL}")
+    logger.info(f"Tenant ID: {TENANT_ID}")
+    logger.info(f"Client ID: {CLIENT_ID}")
+    logger.info(f"Client Secret: {'*' * len(CLIENT_SECRET) if CLIENT_SECRET else 'NOT SET'}")
     
     try:
         # Create backup instance and run backup

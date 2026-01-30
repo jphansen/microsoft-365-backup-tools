@@ -1,225 +1,184 @@
 # Microsoft 365 Backup Tools
 
-A collection of Python tools for backing up Microsoft 365 services including SharePoint sites and Dataverse databases.
-
-## Tools Included
-
-### 1. SharePoint Site Backup Tool
-Backs up an entire SharePoint site from Office 365, including document libraries, lists, files, folders, and metadata.
-
-### 2. Dataverse Database Backup Tool  
-Backs up an entire Microsoft Dataverse (Power Platform) database with all data exported to JSON format.
-
-## Quick Start
-
-### SharePoint Backup
-```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Configure environment variables
-cp .env.example .env
-# Edit .env with your SharePoint credentials
-
-# Run backup
-python sharepoint_backup.py
-```
-
-### Dataverse Backup
-```bash
-# Install dependencies  
-pip install -r dataverse_requirements.txt
-
-# Configure environment variables
-cp .env.dataverse.example .env.dataverse
-# Edit .env.dataverse with your Dataverse credentials
-
-# Run backup
-python dataverse_backup.py
-```
-
-## Detailed Documentation
-
-- [SharePoint Backup Documentation](#features) - Complete guide for SharePoint backup tool (see below)
-- [Dataverse Backup Documentation](DATAVERSE_README.md) - Complete guide for Dataverse backup tool
+Backup tools for Microsoft 365 services including Dataverse (Power Platform) and SharePoint.
 
 ## Features
 
-- ✅ Backs up all document libraries with files and folder structure
-- ✅ Backs up all SharePoint lists with items
-- ✅ Downloads file metadata (creation date, author, etc.)
-- ✅ Preserves folder hierarchy
-- ✅ Saves site metadata
-- ✅ Comprehensive logging
-- ✅ Timestamped backup folders
+- **Dataverse Backup**: Full backup of Dataverse databases including all tables, records, and metadata
+- **SharePoint Backup**: Backup SharePoint sites, lists, and documents
+- **Incremental backups**: Track changes and backup only modified data
+- **Compression**: Optional compression to save storage space
+- **Logging**: Comprehensive logging for monitoring and troubleshooting
 
-## Prerequisites
+## Installation with UV
 
-1. **Azure AD App Registration**
-   - Register an application in Azure AD
-   - Grant SharePoint permissions:
-     - `Sites.Read.All` (Application permission)
-     - Or `Sites.FullControl.All` for full access
+This project uses [UV](https://github.com/astral-sh/uv) for Python package management.
+
+### 1. Install UV (if not already installed)
+
+```bash
+# On macOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# On Windows (PowerShell)
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+### 2. Clone and setup the project
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd microsoft-365-backup-tools
+
+# Create virtual environment and install dependencies
+uv sync
+```
+
+## Configuration
+
+### Dataverse Backup
+
+1. **Create Azure AD App Registration**:
+   - Go to Azure Portal → Azure Active Directory → App registrations
+   - Create a new app registration
+   - Add API permissions: `Dataverse/user_impersonation` (delegated)
    - Create a client secret
-   - Grant admin consent for the permissions
 
-2. **Python 3.7+**
+2. **Create Application User in Dataverse**:
+   - In Power Platform Admin Center, create an application user
+   - Assign appropriate security roles (System Administrator recommended for full backup)
 
-## Installation
+3. **Create `.env.dataverse` file**:
+   ```bash
+   cp .env.dataverse.example .env.dataverse
+   ```
+   
+   Edit `.env.dataverse` with your credentials:
+   ```
+   DATAVERSE_ENVIRONMENT_URL=https://your-environment.crm.dynamics.com
+   DATAVERSE_TENANT_ID=your-tenant-id
+   DATAVERSE_CLIENT_ID=your-client-id
+   DATAVERSE_CLIENT_SECRET=your-client-secret
+   BACKUP_DIR=backup
+   ```
 
-1. Install required packages:
-```bash
-pip install -r requirements.txt
-```
+### SharePoint Backup
 
-2. Set up environment variables:
-```bash
-export SHAREPOINT_SITE_URL="https://yourtenant.sharepoint.com/sites/yoursite"
-export SHAREPOINT_CLIENT_ID="your-azure-ad-app-client-id"
-export SHAREPOINT_CLIENT_SECRET="your-azure-ad-app-client-secret"
-export BACKUP_DIR="backup"  # Optional, defaults to "backup"
-```
+1. **Create `.env.sharepoint` file**:
+   ```bash
+   cp .env.sharepoint.example .env.sharepoint
+   ```
+   
+   Edit `.env.sharepoint` with your credentials.
 
 ## Usage
 
-### Basic Usage
+### Dataverse Backup
 
 ```bash
-python sharepoint_backup.py
+# Test environment variables
+uv run --env-file .env.dataverse test_env.py
+
+# Run full backup
+uv run --env-file .env.dataverse dataverse_backup.py
 ```
 
-### Using Environment Variables
-
-Create a `.env` file or export variables:
+### SharePoint Backup
 
 ```bash
-# Linux/Mac
-export SHAREPOINT_SITE_URL="https://contoso.sharepoint.com/sites/ProjectSite"
-export SHAREPOINT_CLIENT_ID="12345678-1234-1234-1234-123456789abc"
-export SHAREPOINT_CLIENT_SECRET="your-secret-value"
-
-python sharepoint_backup.py
+# Run SharePoint backup
+uv run --env-file .env.sharepoint sharepoint_backup.py
 ```
 
-```powershell
-# Windows PowerShell
-$env:SHAREPOINT_SITE_URL="https://contoso.sharepoint.com/sites/ProjectSite"
-$env:SHAREPOINT_CLIENT_ID="12345678-1234-1234-1234-123456789abc"
-$env:SHAREPOINT_CLIENT_SECRET="your-secret-value"
+### Demo Script
 
-python sharepoint_backup.py
+A demonstration script is available to verify the UV setup:
+
+```bash
+python demo_uv_project.py
 ```
 
-## Azure AD App Setup
-
-### Step-by-Step Guide
-
-1. **Go to Azure Portal** (https://portal.azure.com)
-
-2. **Register a New Application**:
-   - Navigate to "Azure Active Directory" > "App registrations"
-   - Click "New registration"
-   - Name: "SharePoint Backup Tool"
-   - Supported account types: "Accounts in this organizational directory only"
-   - Click "Register"
-
-3. **Note the Application (client) ID**:
-   - This is your `SHAREPOINT_CLIENT_ID`
-
-4. **Create a Client Secret**:
-   - Go to "Certificates & secrets"
-   - Click "New client secret"
-   - Description: "Backup Tool Secret"
-   - Expiry: Choose appropriate duration
-   - Click "Add"
-   - **Copy the secret value immediately** (this is your `SHAREPOINT_CLIENT_SECRET`)
-
-5. **Grant API Permissions**:
-   - Go to "API permissions"
-   - Click "Add a permission"
-   - Choose "SharePoint"
-   - Select "Application permissions"
-   - Add `Sites.Read.All` or `Sites.FullControl.All`
-   - Click "Add permissions"
-   - **Click "Grant admin consent"** (requires admin privileges)
-
-6. **Get your Site URL**:
-   - Navigate to your SharePoint site in a browser
-   - Copy the URL (e.g., `https://contoso.sharepoint.com/sites/YourSite`)
-   - This is your `SHAREPOINT_SITE_URL`
-
-## Backup Structure
-
-The tool creates backups with the following structure:
+## Project Structure
 
 ```
-backup/
-└── sharepoint_backup_20231201_143022/
-    ├── DocumentLibraries/
-    │   ├── Documents/
-    │   │   ├── file1.pdf
-    │   │   ├── file1.pdf.metadata.json
-    │   │   ├── Subfolder/
-    │   │   │   ├── file2.docx
-    │   │   │   └── file2.docx.metadata.json
-    │   └── Shared Documents/
-    │       └── ...
-    ├── Lists/
-    │   ├── Tasks.json
-    │   ├── Announcements.json
-    │   └── CustomList.json
-    ├── site_metadata.json
-    └── sharepoint_backup.log
+.
+├── dataverse_backup.py          # Main Dataverse backup script
+├── sharepoint_backup.py         # Main SharePoint backup script
+├── test_env.py                  # Environment variable test script
+├── pyproject.toml              # Project configuration (UV)
+├── requirements.txt            # Legacy requirements file
+├── dataverse_requirements.txt  # Dataverse-specific requirements
+├── .env.dataverse.example      # Dataverse environment template
+├── .env.sharepoint.example     # SharePoint environment template
+├── README.md                   # This file
+└── backup/                     # Backup output directory
+    └── dataverse_backup_YYYYMMDD_HHMMSS/
+        ├── tables_metadata.json
+        ├── backup_summary.json
+        └── tables/
+            ├── account.json
+            ├── contact.json
+            └── ...
 ```
 
-## File Metadata
+## Backup Output
 
-Each downloaded file includes a `.metadata.json` file containing:
-- File name
-- Server relative URL
-- Creation time
-- Last modified time
-- File size
-- Author information
-- Modified by information
+Each backup creates a timestamped directory with:
+- `tables_metadata.json`: Metadata for all tables
+- `backup_summary.json`: Summary of backup with record counts
+- `tables/`: Individual JSON files for each table
 
-## Logging
+## Scheduling Backups
 
-The tool creates detailed logs:
-- Console output for real-time monitoring
-- `sharepoint_backup.log` file in the backup directory
+### Linux/macOS (cron)
+
+```bash
+# Edit crontab
+crontab -e
+
+# Add line to run backup daily at 2 AM
+0 2 * * * cd /path/to/microsoft-365-backup-tools && uv run --env-file .env.dataverse dataverse_backup.py
+```
+
+### Windows (Task Scheduler)
+
+Create a scheduled task to run:
+```
+cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run --env-file .env.dataverse dataverse_backup.py"
+```
 
 ## Troubleshooting
 
-### Authentication Errors
-- Verify your Client ID and Client Secret are correct
-- Ensure admin consent was granted for API permissions
-- Check that the app has appropriate SharePoint permissions
+### Common Issues
 
-### Permission Errors
-- The app needs `Sites.Read.All` or `Sites.FullControl.All` permissions
-- Verify admin consent was granted
+1. **Authentication Errors**:
+   - Verify Azure AD app has correct permissions
+   - Check application user has security roles in Dataverse
+   - Ensure client secret hasn't expired
 
-### Connection Errors
-- Verify the site URL is correct and accessible
-- Check your network connection
-- Ensure the SharePoint site exists
+2. **Permission Errors**:
+   - Application user needs appropriate security roles
+   - For SharePoint, ensure app has correct Graph API permissions
 
-## Security Notes
+3. **Environment Variables Not Loading**:
+   - Verify `.env.dataverse` file exists and has correct values
+   - Test with `uv run --env-file .env.dataverse test_env.py`
 
-- **Never commit credentials to version control**
-- Store credentials in environment variables or secure key vaults
-- Use Azure Key Vault in production environments
-- Regularly rotate client secrets
-- Use least-privilege permissions (Sites.Read.All for backups)
+### Logs
 
-## Limitations
-
-- System folders (starting with `_`) are skipped
-- Hidden lists are not backed up by default
-- Large files may take time to download
-- API throttling may occur with very large sites
+Check `dataverse_backup.log` for detailed logs:
+```bash
+tail -f dataverse_backup.log
+```
 
 ## License
 
-MIT License - Feel free to modify and use as needed.
+MIT License
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make changes
+4. Submit a pull request
