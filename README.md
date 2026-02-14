@@ -6,7 +6,9 @@ Backup tools for Microsoft 365 services including Dataverse (Power Platform) and
 
 - **Dataverse Backup**: Full backup of Dataverse databases including all tables, records, and metadata
 - **SharePoint Backup**: Backup SharePoint sites, lists, and documents
-- **Incremental backups**: Track changes and backup only modified data
+- **Incremental Backups**: Track changes and backup only modified data using checksum-based deduplication
+- **Multiple Authentication Methods**: User authentication and app registration for SharePoint
+- **Graph API Support**: Modern SharePoint backup using Microsoft Graph API
 - **Compression**: Optional compression to save storage space
 - **Logging**: Comprehensive logging for monitoring and troubleshooting
 
@@ -86,9 +88,34 @@ uv run --env-file .env.dataverse dataverse_backup.py
 
 ### SharePoint Backup
 
+#### Basic Backup
 ```bash
-# Run SharePoint backup
+# Run basic SharePoint backup
 uv run --env-file .env.sharepoint sharepoint_backup.py
+```
+
+#### Incremental Backup with Checksum Deduplication
+```bash
+# First time: Run full backup to populate checksum database
+uv run --env-file .env.sharepoint sharepoint_incremental_backup.py --type full
+
+# Subsequent runs: Incremental backup (only changed files)
+uv run --env-file .env.sharepoint sharepoint_incremental_backup.py
+
+# View backup statistics
+uv run --env-file .env.sharepoint sharepoint_incremental_backup.py --stats
+```
+
+#### Graph API Backup (Modern)
+```bash
+# Backup using Microsoft Graph API
+uv run --env-file .env.sharepoint sharepoint_graph_backup.py
+```
+
+#### User Authentication Backup
+```bash
+# Backup using user authentication
+uv run --env-file .env.sharepoint sharepoint_backup_user_auth.py
 ```
 
 ### Demo Script
@@ -171,6 +198,32 @@ Check `dataverse_backup.log` for detailed logs:
 ```bash
 tail -f dataverse_backup.log
 ```
+
+## Additional Documentation
+
+### SharePoint Backup Documentation
+- **[INCREMENTAL_BACKUP_README.md](INCREMENTAL_BACKUP_README.md)**: Complete guide to incremental backup with checksum deduplication
+- **[SHAREPOINT_APP_REGISTRATION_GUIDE.md](SHAREPOINT_APP_REGISTRATION_GUIDE.md)**: Step-by-step guide for Azure AD app registration
+- **[modern_sharepoint_solution.md](modern_sharepoint_solution.md)**: Modern SharePoint backup solution using Graph API
+- **[tenant_wide_backup_solution.md](tenant_wide_backup_solution.md)**: Tenant-wide backup solution architecture
+
+### Test Scripts
+The project includes comprehensive test scripts for various components:
+- `test_graph_backup.py`: Test Microsoft Graph API backup functionality
+- `test_incremental_backup.py`: Test incremental backup logic and checksum database
+- `test_sharepoint_auth.py`: Test SharePoint authentication methods
+- `test_site_access.py`: Test site access permissions
+- `test_tenant_access.py`: Test tenant-wide access
+- `test_user_auth.py`: Test user authentication backup
+
+### Utility Scripts
+- `check_app_permissions.py`: Check application permissions in Azure AD
+- `checksum_db.py`: SQLite database for checksum tracking
+- `decode_permissions.py`: Decode and analyze permission scopes
+- `diagnose_sharepoint_access.py`: Diagnose SharePoint access issues
+- `get_service_principal.py`: Get service principal information
+- `grant_access_final.ps1`: PowerShell script to grant SharePoint access
+- `grant_sharepoint_access.ps1`: PowerShell script for SharePoint permissions
 
 ## License
 

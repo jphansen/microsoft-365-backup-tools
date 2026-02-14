@@ -7,11 +7,17 @@ requires-python = ">=3.8"
 dependencies = [
     "requests>=2.28.0",
     "msal>=1.22.0",
+    "Office365-REST-Python-Client>=2.5.3",
 ]
 
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+# Disable automatic package discovery since this is a script collection
+# We don't want to build a traditional Python package
+packages = []
 
 [tool.uv]
 # UV-specific configuration
