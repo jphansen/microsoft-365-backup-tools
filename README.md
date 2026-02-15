@@ -1,14 +1,16 @@
 # Microsoft 365 Backup Tools
 
-Backup tools for Microsoft 365 services including Dataverse (Power Platform) and SharePoint.
+Backup tools for Microsoft 365 services including Dataverse (Power Platform), SharePoint, and Exchange/Outlook.
 
 ## Features
 
 - **Dataverse Backup**: Full backup of Dataverse databases including all tables, records, and metadata
 - **SharePoint Backup**: Backup SharePoint sites, lists, and documents
+- **Exchange/Outlook Backup**: Backup emails, attachments, and mailbox data from Exchange Online
 - **Incremental Backups**: Track changes and backup only modified data using checksum-based deduplication
-- **Multiple Authentication Methods**: User authentication and app registration for SharePoint
-- **Graph API Support**: Modern SharePoint backup using Microsoft Graph API
+- **Multiple Authentication Methods**: User authentication and app registration for all services
+- **Graph API Support**: Modern backup using Microsoft Graph API for SharePoint and Exchange
+- **Multiple Output Formats**: EML, JSON, or both for email backups
 - **Compression**: Optional compression to save storage space
 - **Logging**: Comprehensive logging for monitoring and troubleshooting
 
@@ -74,6 +76,37 @@ uv sync
    
    Edit `.env.sharepoint` with your credentials.
 
+### Exchange/Outlook Backup
+
+1. **Update Azure AD App Registration**:
+   - Go to your existing app registration (or create a new one)
+   - Add Microsoft Graph API permissions:
+     - **Mail.Read** (Application) - Required for reading emails
+     - **Mail.ReadWrite** (Application) - Optional, for marking emails as backed up
+     - **MailboxSettings.Read** (Application) - Optional, for mailbox settings
+     - **User.Read.All** (Application) - Required for user enumeration
+   - Grant admin consent for all permissions
+
+2. **Create `.env.exchange` file**:
+   ```bash
+   cp .env.exchange.example .env.exchange
+   ```
+   
+   Edit `.env.exchange` with your credentials:
+   ```
+   # Azure AD Configuration
+   EXCHANGE_TENANT_ID=your-tenant-id
+   EXCHANGE_CLIENT_ID=your-client-id
+   EXCHANGE_CLIENT_SECRET=your-client-secret
+   
+   # Backup Settings
+   EXCHANGE_BACKUP_DIR=backup/exchange
+   EXCHANGE_USER_EMAIL=user@yourdomain.com  # Optional: Specific user to backup
+   EXCHANGE_INCLUDE_ATTACHMENTS=true
+   EXCHANGE_MAX_EMAILS_PER_BACKUP=1000
+   EXCHANGE_BACKUP_FORMAT=both  # eml, json, or both
+   ```
+
 ## Usage
 
 ### Dataverse Backup
@@ -117,6 +150,39 @@ uv run --env-file .env.sharepoint sharepoint_graph_backup.py
 # Backup using user authentication
 uv run --env-file .env.sharepoint sharepoint_backup_user_auth.py
 ```
+
+### Exchange/Outlook Backup
+
+#### Test Authentication
+```bash
+# Test Azure AD authentication and Graph API access
+uv run --env-file .env.exchange python test_exchange_auth.py
+
+# Run comprehensive functional tests
+uv run --env-file .env.exchange python test_exchange_backup.py
+```
+
+#### Run Backup
+```bash
+# Run full Exchange/Outlook backup
+uv run --env-file .env.exchange python exchange_backup.py
+
+# Backup specific user only
+EXCHANGE_USER_EMAIL=user@yourdomain.com uv run --env-file .env.exchange python exchange_backup.py
+
+# Backup with limits (useful for testing)
+EXCHANGE_MAX_EMAILS_PER_BACKUP=100 uv run --env-file .env.exchange python exchange_backup.py
+
+# Skip attachments for faster backup
+EXCHANGE_INCLUDE_ATTACHMENTS=false uv run --env-file .env.exchange python exchange_backup.py
+```
+
+#### Backup Options
+- **Backup Format**: Choose between EML (standard email format), JSON (structured data), or both
+- **Folder Structure**: Preserve mailbox folder hierarchy or flatten all emails
+- **Incremental Backup**: Only backup new or changed emails using checksum tracking
+- **Filtering**: Filter by date, sender, subject, or read status
+- **Attachment Handling**: Include or exclude attachments, with size limits
 
 ### Demo Script
 
@@ -203,9 +269,13 @@ tail -f dataverse_backup.log
 
 ### SharePoint Backup Documentation
 - **[INCREMENTAL_BACKUP_README.md](INCREMENTAL_BACKUP_README.md)**: Complete guide to incremental backup with checksum deduplication
-- **[SHAREPOINT_APP_REGISTRATION_GUIDE.md](SHAREPOINT_APP_REGISTRATION_GUIDE.md)**: Step-by-step guide for Azure AD app registration
+- **[SHAREPOINT_APP_REGISTRATION_GUIDE.md](SHAREPOINT_APP_REGISTRATION_GUIDE.md)**: Step-by-step guide for Azure AD app registration (updated with Exchange permissions)
 - **[modern_sharepoint_solution.md](modern_sharepoint_solution.md)**: Modern SharePoint backup solution using Graph API
 - **[tenant_wide_backup_solution.md](tenant_wide_backup_solution.md)**: Tenant-wide backup solution architecture
+
+### Exchange/Outlook Backup Documentation
+- **[EXCHANGE_APP_REGISTRATION_GUIDE.md](EXCHANGE_APP_REGISTRATION_GUIDE.md)**: Complete guide for Exchange/Outlook backup app registration and security setup
+- **[EXCHANGE_BACKUP_IMPLEMENTATION_PLAN.md](EXCHANGE_BACKUP_IMPLEMENTATION_PLAN.md)**: Implementation plan and architecture for Exchange backup
 
 ### Test Scripts
 The project includes comprehensive test scripts for various components:
@@ -215,6 +285,8 @@ The project includes comprehensive test scripts for various components:
 - `test_site_access.py`: Test site access permissions
 - `test_tenant_access.py`: Test tenant-wide access
 - `test_user_auth.py`: Test user authentication backup
+- `test_exchange_auth.py`: Test Exchange/Outlook authentication and Graph API access
+- `test_exchange_backup.py`: Comprehensive functional tests for Exchange backup
 
 ### Utility Scripts
 - `check_app_permissions.py`: Check application permissions in Azure AD
@@ -224,6 +296,10 @@ The project includes comprehensive test scripts for various components:
 - `get_service_principal.py`: Get service principal information
 - `grant_access_final.ps1`: PowerShell script to grant SharePoint access
 - `grant_sharepoint_access.ps1`: PowerShell script for SharePoint permissions
+
+### Exchange Backup Scripts
+- `exchange_backup.py`: Main Exchange/Outlook backup script using Microsoft Graph API
+- `.env.exchange.example`: Environment template for Exchange backup configuration
 
 ## License
 
