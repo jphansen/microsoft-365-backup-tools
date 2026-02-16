@@ -361,6 +361,12 @@ LOGURU_LEVEL=TRACE python sharepoint_incremental_backup.py --help
    - Check that `loguru` is installed (`uv sync` to install dependencies)
    - Verify log file permissions in the working directory
 
+5. **Token Expiration During Long Backups**:
+   - Exchange backup now includes automatic token refresh
+   - Tokens automatically refresh when older than 50 minutes (tokens expire in 60-90 minutes)
+   - 401 errors trigger automatic token refresh and retry
+   - Backups can now run indefinitely without token expiration issues
+
 ### Logs
 
 Check log files for detailed information:
