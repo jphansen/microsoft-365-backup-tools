@@ -12,6 +12,28 @@ Backup tools for Microsoft 365 services including Dataverse (Power Platform), Sh
 - **Multiple Output Formats**: EML, JSON, or both for email backups
 - **Comprehensive Logging**: Detailed logging for monitoring and troubleshooting
 
+## Recent Improvements
+
+### Enhanced Logging (February 2026)
+- **Loguru Integration**: All backup scripts now use `loguru` for professional logging
+- **Custom Log Levels**: TRACE (🔍), DEBUG (🐛), INFO (ℹ️), SUCCESS (✅), WARNING (⚠️), ERROR (❌), CRITICAL (💥)
+- **Colored Console Output**: Easy-to-read colored logs with icons
+- **File Logging**: Automatic log rotation (10 MB), retention (30 days), and compression (zip)
+- **Verbosity Control**: Environment variable `LOGURU_LEVEL` controls log detail
+
+### Exchange Backup Improvements (February 2026)
+- **Unlimited Email Backup by Default**: `--max-emails` now defaults to 0 (unlimited) instead of 1000
+- **Automatic Token Refresh**: Tokens automatically refresh during long-running backups
+  - Proactive refresh at 50 minutes (before 60-90 minute expiration)
+  - Automatic retry on 401 errors with token refresh
+  - Enables 24+ hour backup runs without token expiration issues
+- **Better User Experience**: Shows "unlimited" instead of "0" in backup summary
+
+### Unified Configuration (Earlier)
+- **Single `.env` File**: All services now use unified environment configuration
+- **Simplified Setup**: One configuration file for Dataverse, SharePoint, and Exchange
+- **Backward Compatible**: Legacy `.env.*` files still supported
+
 ## Installation with UV
 
 This project uses [UV](https://github.com/astral-sh/uv) for Python package management.
