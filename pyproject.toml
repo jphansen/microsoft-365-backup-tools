@@ -5,7 +5,7 @@ description = "Backup tools for Microsoft 365 services including Dataverse and S
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
-    "requests>=2.28.0",
+    "requests>=2.31.0",
     "msal>=1.22.0",
     "Office365-REST-Python-Client>=2.5.3",
     "python-dotenv>=1.0.0",

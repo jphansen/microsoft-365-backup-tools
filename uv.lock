@@ -404,7 +404,7 @@ requires-dist = [
     { name = "msal", specifier = ">=1.22.0" },
     { name = "office365-rest-python-client", specifier = ">=2.5.3" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
-    { name = "requests", specifier = ">=2.28.0" },
+    { name = "requests", specifier = ">=2.31.0" },
 ]
 
 [[package]]

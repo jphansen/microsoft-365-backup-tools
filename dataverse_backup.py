@@ -462,6 +462,16 @@ class DataverseBackup:
 
 def main():
     """Main entry point."""
+    # Try to load environment variables from .env file
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+        logger.info("Loaded environment variables from .env file")
+    except ImportError:
+        logger.warning("python-dotenv not installed. Using system environment variables.")
+    except Exception as e:
+        logger.warning(f"Failed to load .env file: {str(e)}")
+    
     # Configuration - Load from environment variables
     ENVIRONMENT_URL = os.environ.get('DATAVERSE_ENVIRONMENT_URL')
     TENANT_ID = os.environ.get('DATAVERSE_TENANT_ID')

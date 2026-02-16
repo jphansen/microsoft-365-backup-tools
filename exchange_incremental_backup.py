@@ -155,6 +155,16 @@ def cleanup_old_records(db_path, keep_days):
 
 def main():
     """Main entry point with command-line arguments."""
+    # Try to load environment variables from .env file
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+        logger.info("Loaded environment variables from .env file")
+    except ImportError:
+        logger.warning("python-dotenv not installed. Using system environment variables.")
+    except Exception as e:
+        logger.warning(f"Failed to load .env file: {str(e)}")
+    
     parser = argparse.ArgumentParser(
         description='Exchange Incremental Backup with Automatic Mailbox Discovery'
     )

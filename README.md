@@ -39,132 +39,171 @@ uv sync
 
 ## Configuration
 
-### Dataverse Backup
+### Unified Environment Configuration
+
+All backup tools now use a single `.env` file for configuration. This simplifies setup and ensures consistency across all services.
+
+1. **Create the unified `.env` file**:
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Edit `.env` with your credentials for all services:
+   ```
+   # Microsoft 365 Backup Tools - Unified Environment Configuration
+   
+   # COMMON CONFIGURATION
+   BACKUP_DIR=backup
+   
+   # SHAREPOINT BACKUP CONFIGURATION
+   SHAREPOINT_SITE_URL=https://yourtenant.sharepoint.com/sites/yoursite
+   SHAREPOINT_TENANT_ID=your-tenant-id-here
+   SHAREPOINT_CLIENT_ID=your-client-id-here
+   SHAREPOINT_CLIENT_SECRET=your-client-secret-here
+   
+   # EXCHANGE BACKUP CONFIGURATION
+   EXCHANGE_TENANT_ID=your-tenant-id-here
+   EXCHANGE_CLIENT_ID=your-client-id-here
+   EXCHANGE_CLIENT_SECRET=your-client-secret-here
+   EXCHANGE_BACKUP_DIR=backup/exchange
+   
+   # DATAVERSE BACKUP CONFIGURATION
+   DATAVERSE_ENVIRONMENT_URL=https://org.crm.dynamics.com
+   DATAVERSE_TENANT_ID=your-tenant-id-here
+   DATAVERSE_CLIENT_ID=your-client-id-here
+   DATAVERSE_CLIENT_SECRET=your-client-secret-here
+   ```
+
+### Azure AD App Registration Setup
+
+#### Option 1: Single App for All Services (Recommended)
+Create one Azure AD app with all required permissions:
 
 1. **Create Azure AD App Registration**:
    - Go to Azure Portal → Azure Active Directory → App registrations
    - Create a new app registration
-   - Add API permissions: `Dataverse/user_impersonation` (delegated)
+   - Add Microsoft Graph API permissions:
+     - **Sites.Read.All** (Application) - For SharePoint backup
+     - **Mail.Read** (Application) - For Exchange backup
+     - **User.Read.All** (Application) - For user enumeration
+   - Add Dataverse permission:
+     - **Dataverse/user_impersonation** (Delegated)
+   - Grant admin consent for all permissions
    - Create a client secret
 
-2. **Create Application User in Dataverse**:
+2. **Create Application User in Dataverse** (if backing up Dataverse):
    - In Power Platform Admin Center, create an application user
    - Assign appropriate security roles (System Administrator recommended for full backup)
 
-3. **Create `.env.dataverse` file**:
-   ```bash
-   cp .env.dataverse.example .env.dataverse
-   ```
-   
-   Edit `.env.dataverse` with your credentials:
-   ```
-   DATAVERSE_ENVIRONMENT_URL=https://your-environment.crm.dynamics.com
-   DATAVERSE_TENANT_ID=your-tenant-id
-   DATAVERSE_CLIENT_ID=your-client-id
-   DATAVERSE_CLIENT_SECRET=your-client-secret
-   BACKUP_DIR=backup
-   ```
+#### Option 2: Separate Apps for Each Service
+Create separate Azure AD apps for each service if you prefer to isolate permissions.
 
-### SharePoint Incremental Backup
+### Legacy Configuration Files
 
-1. **Create Azure AD App Registration for SharePoint**:
-   - Go to Azure Portal → Azure Active Directory → App registrations
-   - Create a new app registration or use existing
-   - Add Microsoft Graph API permissions:
-     - **Sites.Read.All** (Application) - Required for reading SharePoint sites
-     - **User.Read.All** (Application) - Required for user enumeration
-   - Grant admin consent for all permissions
-   - Create a client secret
+For backward compatibility, the old `.env.*` files are still supported:
+- `.env.dataverse` - Dataverse-specific configuration
+- `.env.sharepoint` - SharePoint-specific configuration  
+- `.env.exchange` - Exchange-specific configuration
 
-2. **Create `.env.sharepoint` file**:
-   ```bash
-   cp .env.sharepoint.example .env.sharepoint
-   ```
-   
-   Edit `.env.sharepoint` with your credentials:
-   ```
-   SHAREPOINT_CLIENT_ID=your-client-id
-   SHAREPOINT_CLIENT_SECRET=your-client-secret
-   BACKUP_DIR=backup
-   ```
-
-### Exchange/Outlook Incremental Backup
-
-1. **Update Azure AD App Registration**:
-   - Go to your existing app registration (or create a new one)
-   - Add Microsoft Graph API permissions:
-     - **Mail.Read** (Application) - Required for reading emails
-     - **Mail.ReadWrite** (Application) - Optional, for marking emails as backed up
-     - **MailboxSettings.Read** (Application) - Optional, for mailbox settings
-     - **User.Read.All** (Application) - Required for user enumeration
-   - Grant admin consent for all permissions
-
-2. **Create `.env.exchange` file**:
-   ```bash
-   cp .env.exchange.example .env.exchange
-   ```
-   
-   Edit `.env.exchange` with your credentials:
-   ```
-   # Azure AD Configuration
-   EXCHANGE_TENANT_ID=your-tenant-id
-   EXCHANGE_CLIENT_ID=your-client-id
-   EXCHANGE_CLIENT_SECRET=your-client-secret
-   
-   # Backup Settings
-   EXCHANGE_BACKUP_DIR=backup/exchange
-   EXCHANGE_USER_EMAIL=user@yourdomain.com  # Optional: Specific user to backup
-   EXCHANGE_INCLUDE_ATTACHMENTS=true
-   EXCHANGE_MAX_EMAILS_PER_BACKUP=0  # 0 means unlimited
-   EXCHANGE_BACKUP_FORMAT=both  # eml, json, or both
-   ```
+However, the unified `.env` file is recommended for new installations.
 
 ## Usage
 
-### Dataverse Backup
+### Using the Unified .env File (Recommended)
+
+All scripts now automatically load environment variables from the `.env` file when run with the virtual environment:
 
 ```bash
-# Run full Dataverse backup
-uv run --env-file .env.dataverse dataverse_backup.py
+# Activate the virtual environment (optional)
+source .venv/bin/activate
+
+# Run Dataverse backup
+python dataverse_backup.py
+
+# Run SharePoint incremental backup
+python sharepoint_incremental_backup.py --type full  # First time
+python sharepoint_incremental_backup.py              # Subsequent runs
+
+# Run Exchange incremental backup
+python exchange_incremental_backup.py --type full    # First time
+python exchange_incremental_backup.py                # Subsequent runs
 ```
 
-### SharePoint Incremental Backup
+### Using UV with Unified .env File
 
 ```bash
-# First time: Run full backup to populate checksum database
-uv run --env-file .env.sharepoint sharepoint_incremental_backup.py --type full
+# Run Dataverse backup
+uv run dataverse_backup.py
 
-# Subsequent runs: Incremental backup (only changed files)
+# Run SharePoint incremental backup
+uv run sharepoint_incremental_backup.py --type full  # First time
+uv run sharepoint_incremental_backup.py              # Subsequent runs
+
+# Run Exchange incremental backup
+uv run exchange_incremental_backup.py --type full    # First time
+uv run exchange_incremental_backup.py                # Subsequent runs
+```
+
+### Legacy Usage with Separate .env Files
+
+For backward compatibility, you can still use separate `.env.*` files:
+
+```bash
+# Dataverse Backup
+uv run --env-file .env.dataverse dataverse_backup.py
+
+# SharePoint Incremental Backup
+uv run --env-file .env.sharepoint sharepoint_incremental_backup.py --type full
 uv run --env-file .env.sharepoint sharepoint_incremental_backup.py
 
-# View backup statistics
-uv run --env-file .env.sharepoint sharepoint_incremental_backup.py --stats
-
-# Cleanup old records (keep last 90 days)
-uv run --env-file .env.sharepoint sharepoint_incremental_backup.py --cleanup 90
+# Exchange/Outlook Incremental Backup
+uv run --env-file .env.exchange exchange_incremental_backup.py --type full
+uv run --env-file .env.exchange exchange_incremental_backup.py
 ```
 
-### Exchange/Outlook Incremental Backup
+### Common Commands
 
+#### SharePoint Backup
 ```bash
-# Run incremental Exchange/Outlook backup
-uv run --env-file .env.exchange exchange_incremental_backup.py
+# First time: Full backup to populate checksum database
+python sharepoint_incremental_backup.py --type full
 
-# Run full backup (first time)
-uv run --env-file .env.exchange exchange_incremental_backup.py --type full
+# Subsequent runs: Incremental backup (only changed files)
+python sharepoint_incremental_backup.py
 
 # View backup statistics
-uv run --env-file .env.exchange exchange_incremental_backup.py --stats
+python sharepoint_incremental_backup.py --stats
 
 # Cleanup old records (keep last 90 days)
-uv run --env-file .env.exchange exchange_incremental_backup.py --cleanup 90
+python sharepoint_incremental_backup.py --cleanup 90
+```
+
+#### Exchange Backup
+```bash
+# First time: Full backup
+python exchange_incremental_backup.py --type full
+
+# Subsequent runs: Incremental backup
+python exchange_incremental_backup.py
+
+# View backup statistics
+python exchange_incremental_backup.py --stats
+
+# Cleanup old records (keep last 90 days)
+python exchange_incremental_backup.py --cleanup 90
 
 # Backup with specific options
-uv run --env-file .env.exchange exchange_incremental_backup.py \
+python exchange_incremental_backup.py \
   --backup-dir backup/exchange \
   --max-emails 1000 \
   --no-attachments \
   --format json
+```
+
+#### Dataverse Backup
+```bash
+# Run full Dataverse backup
+python dataverse_backup.py
 ```
 
 ## Project Structure
@@ -180,6 +219,7 @@ uv run --env-file .env.exchange exchange_incremental_backup.py \
 ├── exchange_checksum_db.py           # Exchange checksum database
 ├── exchange_incremental_backup.py    # Exchange incremental backup script
 ├── sharepoint_incremental_backup.py  # SharePoint incremental backup script
+├── .env                              # Unified environment configuration (NEW)
 ├── .env.dataverse.example            # Dataverse environment template
 ├── .env.example                      # General environment template
 ├── .env.exchange                     # Exchange environment configuration
@@ -217,23 +257,42 @@ Creates organized directory structure:
 
 ### Linux/macOS (cron)
 
+#### Using Virtual Environment (Recommended)
 ```bash
 # Edit crontab
 crontab -e
 
 # Add lines to run incremental backups daily at 2 AM
-0 2 * * * cd /path/to/microsoft-365-backup-tools && uv run --env-file .env.sharepoint sharepoint_incremental_backup.py
-0 3 * * * cd /path/to/microsoft-365-backup-tools && uv run --env-file .env.exchange exchange_incremental_backup.py
-0 4 * * 0 cd /path/to/microsoft-365-backup-tools && uv run --env-file .env.dataverse dataverse_backup.py
+0 2 * * * cd /path/to/microsoft-365-backup-tools && .venv/bin/python sharepoint_incremental_backup.py
+0 3 * * * cd /path/to/microsoft-365-backup-tools && .venv/bin/python exchange_incremental_backup.py
+0 4 * * 0 cd /path/to/microsoft-365-backup-tools && .venv/bin/python dataverse_backup.py
+```
+
+#### Using UV
+```bash
+# Edit crontab
+crontab -e
+
+# Add lines to run incremental backups daily at 2 AM
+0 2 * * * cd /path/to/microsoft-365-backup-tools && uv run sharepoint_incremental_backup.py
+0 3 * * * cd /path/to/microsoft-365-backup-tools && uv run exchange_incremental_backup.py
+0 4 * * 0 cd /path/to/microsoft-365-backup-tools && uv run dataverse_backup.py
 ```
 
 ### Windows (Task Scheduler)
 
-Create scheduled tasks to run:
+#### Using Virtual Environment
 ```
-cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run --env-file .env.sharepoint sharepoint_incremental_backup.py"
-cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run --env-file .env.exchange exchange_incremental_backup.py"
-cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run --env-file .env.dataverse dataverse_backup.py"
+cmd /c "cd C:\path\to\microsoft-365-backup-tools && .venv\Scripts\python.exe sharepoint_incremental_backup.py"
+cmd /c "cd C:\path\to\microsoft-365-backup-tools && .venv\Scripts\python.exe exchange_incremental_backup.py"
+cmd /c "cd C:\path\to\microsoft-365-backup-tools && .venv\Scripts\python.exe dataverse_backup.py"
+```
+
+#### Using UV
+```
+cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run sharepoint_incremental_backup.py"
+cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run exchange_incremental_backup.py"
+cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run dataverse_backup.py"
 ```
 
 ## Troubleshooting
