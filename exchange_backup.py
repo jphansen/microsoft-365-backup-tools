@@ -103,6 +103,7 @@ class ExchangeBackup:
         
         # Internal state
         self.access_token = None
+        self.token_obtained_time = None
         self.session = None
         self.backup_path = None
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -160,6 +161,7 @@ class ExchangeBackup:
             
             token_response = response.json()
             self.access_token = token_response.get('access_token')
+            self.token_obtained_time = datetime.now()
             
             if not self.access_token:
                 raise ValueError("No access token received")
@@ -169,6 +171,20 @@ class ExchangeBackup:
         except Exception as e:
             logger.error(f"Authentication failed: {str(e)}")
             raise
+    
+    def _refresh_token_if_needed(self):
+        """Refresh token if it's about to expire (older than 50 minutes)."""
+        if not self.token_obtained_time:
+            return
+        
+        current_time = datetime.now()
+        time_since_token = current_time - self.token_obtained_time
+        
+        # Refresh if token is older than 50 minutes (tokens typically expire in 60-90 minutes)
+        if time_since_token.total_seconds() > 3000:  # 50 minutes
+            logger.info("🔄 Refreshing access token...")
+            self._authenticate()
+            logger.info("✅ Token refreshed")
     
     def _setup_backup_directory(self):
         """Create backup directory structure."""
@@ -185,7 +201,7 @@ class ExchangeBackup:
     
     def _make_graph_request(self, endpoint: str, method: str = 'GET', **kwargs) -> Dict[str, Any]:
         """
-        Make a request to Microsoft Graph API.
+        Make a request to Microsoft Graph API with automatic token refresh.
         
         Args:
             endpoint: Graph API endpoint (without base URL)
@@ -196,6 +212,9 @@ class ExchangeBackup:
             Response JSON as dictionary
         """
         url = f"{self.graph_endpoint}{endpoint}"
+        
+        # Refresh token if needed before making request
+        self._refresh_token_if_needed()
         
         headers = {
             'Authorization': f'Bearer {self.access_token}',
@@ -222,6 +241,37 @@ class ExchangeBackup:
             
             return response.json()
             
+        except requests.exceptions.HTTPError as e:
+            # If we get 401, try refreshing token once and retry
+            if e.response is not None and e.response.status_code == 401:
+                logger.warning(f"Received 401 for {url}, attempting token refresh...")
+                self._authenticate()  # Force re-authentication
+                
+                # Update headers with new token
+                headers['Authorization'] = f'Bearer {self.access_token}'
+                
+                # Retry the request
+                time.sleep(self.rate_limit_delay)
+                response = self.session.request(
+                    method=method,
+                    url=url,
+                    headers=headers,
+                    timeout=self.request_timeout,
+                    **kwargs
+                )
+                response.raise_for_status()
+                
+                if response.status_code == 204:  # No content
+                    return {}
+                
+                return response.json()
+            else:
+                # Re-raise other HTTP errors
+                logger.error(f"Graph API request failed: {str(e)}")
+                if e.response is not None:
+                    logger.error(f"Response: {e.response.text}")
+                raise
+                
         except requests.exceptions.RequestException as e:
             logger.error(f"Graph API request failed: {str(e)}")
             if hasattr(e, 'response') and e.response is not None:
@@ -386,19 +436,51 @@ class ExchangeBackup:
         return attachments
     
     def _download_attachment(self, user_id: str, attachment_id: str, message_id: str) -> Optional[bytes]:
-        """Download a specific attachment."""
+        """Download a specific attachment with automatic token refresh."""
         endpoint = f"/users/{user_id}/messages/{message_id}/attachments/{attachment_id}/$value"
+        url = f"{self.graph_endpoint}{endpoint}"
+        
+        # Refresh token if needed before making request
+        self._refresh_token_if_needed()
+        
+        headers = {
+            'Authorization': f'Bearer {self.access_token}',
+            'Accept': 'application/octet-stream'
+        }
         
         try:
             response = self.session.get(
-                f"{self.graph_endpoint}{endpoint}",
-                headers={'Authorization': f'Bearer {self.access_token}'},
+                url,
+                headers=headers,
                 timeout=self.request_timeout
             )
             response.raise_for_status()
             
             return response.content
             
+        except requests.exceptions.HTTPError as e:
+            # If we get 401, try refreshing token once and retry
+            if e.response is not None and e.response.status_code == 401:
+                logger.warning(f"Received 401 for attachment download, attempting token refresh...")
+                self._authenticate()  # Force re-authentication
+                
+                # Update headers with new token
+                headers['Authorization'] = f'Bearer {self.access_token}'
+                
+                # Retry the request
+                response = self.session.get(
+                    url,
+                    headers=headers,
+                    timeout=self.request_timeout
+                )
+                response.raise_for_status()
+                
+                return response.content
+            else:
+                # Re-raise other HTTP errors
+                logger.error(f"Failed to download attachment {attachment_id}: {str(e)}")
+                return None
+                
         except Exception as e:
             logger.error(f"Failed to download attachment {attachment_id}: {str(e)}")
             return None
