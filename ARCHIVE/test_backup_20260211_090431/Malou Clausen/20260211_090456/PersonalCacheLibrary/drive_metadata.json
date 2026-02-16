@@ -1,0 +1,31 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2025-03-16T18:15:37Z",
+  "description": "Personal Cache List",
+  "id": "b!yPmMwajsNkKqN8y-tNMfJgogogjRohxFvGsmQ2MK8z2y6dotFbFvT6iLqaCGQFm8",
+  "lastModifiedDateTime": "2026-01-11T10:16:16Z",
+  "name": "PersonalCacheLibrary",
+  "webUrl": "https://honnimar-my.sharepoint.com/personal/malou_honnimar_com/Lists/PersonalCacheLibrary",
+  "driveType": "business",
+  "createdBy": {
+    "user": {
+      "email": "malou@honnimar.com",
+      "id": "a3df000a-0e9b-4c91-82b4-2b0f91e85cd1",
+      "displayName": "Malou Clausen"
+    }
+  },
+  "owner": {
+    "user": {
+      "email": "malou@honnimar.com",
+      "id": "a3df000a-0e9b-4c91-82b4-2b0f91e85cd1",
+      "displayName": "Malou Clausen"
+    }
+  },
+  "quota": {
+    "deleted": 2754506,
+    "remaining": 1099489537930,
+    "state": "normal",
+    "total": 1099511627776,
+    "used": 19335340
+  }
+}

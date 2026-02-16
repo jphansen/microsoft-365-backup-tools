@@ -1,0 +1,31 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2024-09-12T11:01:18Z",
+  "description": "Personal Cache List",
+  "id": "b!_3K7Ba3qhk22braBlfuswSlngs8hejhEm6F-ln9qY1NtymdFy_atQI6zxCYI1I-G",
+  "lastModifiedDateTime": "2025-09-14T19:27:13Z",
+  "name": "PersonalCacheLibrary",
+  "webUrl": "https://honnimar-my.sharepoint.com/personal/mcc_honnicloud_com/Lists/PersonalCacheLibrary",
+  "driveType": "business",
+  "createdBy": {
+    "user": {
+      "email": "mcc@honnicloud.com",
+      "id": "82689372-060e-411a-b774-4124039c85f7",
+      "displayName": "Malene Clausen"
+    }
+  },
+  "owner": {
+    "user": {
+      "email": "mcc@honnicloud.com",
+      "id": "82689372-060e-411a-b774-4124039c85f7",
+      "displayName": "Malene Clausen"
+    }
+  },
+  "quota": {
+    "deleted": 115359264,
+    "remaining": 1081794178170,
+    "state": "normal",
+    "total": 1099511627776,
+    "used": 17602090342
+  }
+}

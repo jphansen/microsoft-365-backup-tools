@@ -1,0 +1,29 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2024-10-26T23:54:40Z",
+  "description": "",
+  "id": "b!7kFILZfExUCo2483RkHXbRa87ROD-K9AvBGdCZxHGooy0-_n-n8nQZ8QDrQU59VD",
+  "lastModifiedDateTime": "2024-11-02T17:27:02Z",
+  "name": "Dokumenter",
+  "webUrl": "https://honnimar.sharepoint.com/sites/Livsstil/Delte%20dokumenter",
+  "driveType": "documentLibrary",
+  "createdBy": {
+    "user": {
+      "displayName": "Systemkonto"
+    }
+  },
+  "owner": {
+    "group": {
+      "email": "Livsstil@Honnimar.onmicrosoft.com",
+      "id": "077c3246-964d-41f9-bf01-9c66b099dc07",
+      "displayName": "Livsstil-ejere"
+    }
+  },
+  "quota": {
+    "deleted": 0,
+    "remaining": 27487683078970,
+    "state": "normal",
+    "total": 27487790694400,
+    "used": 107615430
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "site_id": "honnimar.sharepoint.com,74da3e43-0f2b-4ccb-8378-fc5517f01868,b3773987-adf1-46d2-8e5c-cd00183c0c0a",
+  "site_name": "Intranet Honnicloud",
+  "site_url": "https://honnimar.sharepoint.com/sites/IntranetHonnicloud",
+  "backup_date": "2026-02-11T09:04:44.885922",
+  "backup_type": "incremental",
+  "backup_method": "Microsoft Graph API (Incremental)"
+}

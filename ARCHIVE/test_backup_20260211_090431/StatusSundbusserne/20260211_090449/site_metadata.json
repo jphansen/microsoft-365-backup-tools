@@ -1,0 +1,8 @@
+{
+  "site_id": "honnimar.sharepoint.com,df9caf1b-4f37-44aa-9c66-937a86211a92,e464d5a8-5d9c-4e33-a71f-067a6ee9196b",
+  "site_name": "StatusSundbusserne",
+  "site_url": "https://honnimar.sharepoint.com/sites/StatusSundbusserne",
+  "backup_date": "2026-02-11T09:04:49.952123",
+  "backup_type": "incremental",
+  "backup_method": "Microsoft Graph API (Incremental)"
+}

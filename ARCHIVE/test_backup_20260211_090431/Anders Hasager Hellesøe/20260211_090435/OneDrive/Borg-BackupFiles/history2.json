@@ -1,0 +1,2622 @@
+[
+{
+    "archives": [
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps01::2026-02-09T20+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 160.261794,
+            "end": "2026-02-09T20:02:56.000000",
+            "hostname": "vps01",
+            "id": "ae2b619ce9543887978d28c125fedeb6751397ee05d80adb6f6f220cf6c6ccb2",
+            "limits": {
+                "max_archive_size": 0.0009418982800402394
+            },
+            "name": "2026-02-09T20+01:00",
+            "start": "2026-02-09T20:00:16.000000",
+            "stats": {
+                "compressed_size": 20935711885,
+                "deduplicated_size": 13243953,
+                "nfiles": 311499,
+                "original_size": 29332643339
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps01::2026-02-10T00+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 182.078772,
+            "end": "2026-02-10T00:03:19.000000",
+            "hostname": "vps01",
+            "id": "bdfda0a5502808b35915a4b41b935493855a7008828e976c71d993a05c7e7fc0",
+            "limits": {
+                "max_archive_size": 0.0009420890152764143
+            },
+            "name": "2026-02-10T00+01:00",
+            "start": "2026-02-10T00:00:17.000000",
+            "stats": {
+                "compressed_size": 20939345966,
+                "deduplicated_size": 16916328,
+                "nfiles": 311499,
+                "original_size": 29353617667
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps01::2026-02-10T04+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 167.075521,
+            "end": "2026-02-10T04:03:04.000000",
+            "hostname": "vps01",
+            "id": "b9ba11191f049bc2676bc1f84751d042e063135dcf3e908510c9acfc2dc4de99",
+            "limits": {
+                "max_archive_size": 0.0009434718457386815
+            },
+            "name": "2026-02-10T04+01:00",
+            "start": "2026-02-10T04:00:17.000000",
+            "stats": {
+                "compressed_size": 20942810565,
+                "deduplicated_size": 20163804,
+                "nfiles": 311499,
+                "original_size": 29366046670
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps01::2026-02-10T08+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 141.664392,
+            "end": "2026-02-10T08:02:44.000000",
+            "hostname": "vps01",
+            "id": "e32df12884ec4b99be8e402eb050e039036f9e8ff31cd1ca638e2bed376e90a8",
+            "limits": {
+                "max_archive_size": 0.0009429950076482445
+            },
+            "name": "2026-02-10T08+01:00",
+            "start": "2026-02-10T08:00:22.000000",
+            "stats": {
+                "compressed_size": 20946244496,
+                "deduplicated_size": 23495964,
+                "nfiles": 311499,
+                "original_size": 29370097555
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps01::2026-02-10T12+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 136.98817,
+            "end": "2026-02-10T12:02:33.000000",
+            "hostname": "vps01",
+            "id": "ddb3c7bf3f768366acf00aa0d637ce11e7f6d5776d4d85eb370012115a6225b5",
+            "limits": {
+                "max_archive_size": 0.0009449500438190364
+            },
+            "name": "2026-02-10T12+01:00",
+            "start": "2026-02-10T12:00:16.000000",
+            "stats": {
+                "compressed_size": 20949808810,
+                "deduplicated_size": 27060657,
+                "nfiles": 311499,
+                "original_size": 29382704733
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps01::2026-02-10T16+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 142.92037,
+            "end": "2026-02-10T16:02:40.000000",
+            "hostname": "vps01",
+            "id": "ad349a1b765319007a4eea406bc1d839e067ad6ab1fa4f91a3df8f2a93c4254d",
+            "limits": {
+                "max_archive_size": 0.0009433287943115505
+            },
+            "name": "2026-02-10T16+01:00",
+            "start": "2026-02-10T16:00:17.000000",
+            "stats": {
+                "compressed_size": 20953387033,
+                "deduplicated_size": 30384855,
+                "nfiles": 311499,
+                "original_size": 29395353732
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps01::2026-02-10T20+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 161.93291,
+            "end": "2026-02-10T20:02:59.000000",
+            "hostname": "vps01",
+            "id": "a79ec6bdd2bfeb351e240f20391db977c47ea07ada447cd4a196c84615411eb1",
+            "limits": {
+                "max_archive_size": 0.0009433764781205941
+            },
+            "name": "2026-02-10T20+01:00",
+            "start": "2026-02-10T20:00:17.000000",
+            "stats": {
+                "compressed_size": 20956839946,
+                "deduplicated_size": 33756174,
+                "nfiles": 311499,
+                "original_size": 29407814103
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps01::2026-02-11T00+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 172.275106,
+            "end": "2026-02-11T00:03:11.000000",
+            "hostname": "vps01",
+            "id": "8cd4fce6bc49df60f14632f4dc2b398b63735df3b1df201304efe1d7116eb836",
+            "limits": {
+                "max_archive_size": 0.0009434718457386815
+            },
+            "name": "2026-02-11T00+01:00",
+            "start": "2026-02-11T00:00:19.000000",
+            "stats": {
+                "compressed_size": 20925233941,
+                "deduplicated_size": 2147903,
+                "nfiles": 311499,
+                "original_size": 29328034085
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps01::2026-02-11T04+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 153.91085,
+            "end": "2026-02-11T04:02:52.000000",
+            "hostname": "vps01",
+            "id": "bf98b9ecd191e1418794b36b5d60683dc4fe0a345b120b21a6c2200b52059f55",
+            "limits": {
+                "max_archive_size": 0.0009448546762009489
+            },
+            "name": "2026-02-11T04+01:00",
+            "start": "2026-02-11T04:00:18.000000",
+            "stats": {
+                "compressed_size": 20928650815,
+                "deduplicated_size": 5433770,
+                "nfiles": 311499,
+                "original_size": 29348903107
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps01::2026-02-11T08+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 138.291632,
+            "end": "2026-02-11T08:02:35.000000",
+            "hostname": "vps01",
+            "id": "48d9c39edf5f1d1b625e81d07bc69244a8306b921d45a710cdd22666e16f0284",
+            "limits": {
+                "max_archive_size": 0.0009446639409647741
+            },
+            "name": "2026-02-11T08+01:00",
+            "start": "2026-02-11T08:00:16.000000",
+            "stats": {
+                "compressed_size": 20932255965,
+                "deduplicated_size": 9081685,
+                "nfiles": 311499,
+                "original_size": 29361445008
+            },
+            "username": "root"
+        }
+    ],
+    "cache": {
+        "path": "/root/.cache/borg/2936f0e1bec5c91f31e84182d5b6cf8f84a29a80893be2b44ce8fb89ffcbb3c8",
+        "stats": {
+            "total_chunks": 353344628,
+            "total_csize": 25441916622299,
+            "total_size": 35822895538308,
+            "total_unique_chunks": 232270,
+            "unique_csize": 47151026597,
+            "unique_size": 122104106104
+        }
+    },
+    "encryption": {
+        "mode": "repokey"
+    },
+    "repository": {
+        "id": "2936f0e1bec5c91f31e84182d5b6cf8f84a29a80893be2b44ce8fb89ffcbb3c8",
+        "last_modified": "2026-02-11T08:02:35.000000",
+        "location": "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps01"
+    }
+}
+,
+{
+    "archives": [
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps03::2026-02-09T20+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 90.00193,
+            "end": "2026-02-09T20:26:34.000000",
+            "hostname": "vps03",
+            "id": "7af5a0269fe3662cc681892988084960400d71e3d068f028ecadf73207089caa",
+            "limits": {
+                "max_archive_size": 0.0005633842038513354
+            },
+            "name": "2026-02-09T20+01:00",
+            "start": "2026-02-09T20:25:04.000000",
+            "stats": {
+                "compressed_size": 20452851911,
+                "deduplicated_size": 350929113,
+                "nfiles": 158235,
+                "original_size": 33727468337
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps03::2026-02-10T00+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 74.803065,
+            "end": "2026-02-10T00:26:20.000000",
+            "hostname": "vps03",
+            "id": "906630ecec93f657a05a14e4df200e1cf73961c63a08b0ba5217beacb8bd75c5",
+            "limits": {
+                "max_archive_size": 0.0005613814838715
+            },
+            "name": "2026-02-10T00+01:00",
+            "start": "2026-02-10T00:25:05.000000",
+            "stats": {
+                "compressed_size": 20457615722,
+                "deduplicated_size": 316595978,
+                "nfiles": 158238,
+                "original_size": 33757913711
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps03::2026-02-10T04+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 150.131628,
+            "end": "2026-02-10T04:27:36.000000",
+            "hostname": "vps03",
+            "id": "2d36b32d2a99e8ecee4eaec4ceb991ef7b5f120f3cc6f4d27e4bfa6d8e89b545",
+            "limits": {
+                "max_archive_size": 0.0005610000133991504
+            },
+            "name": "2026-02-10T04+01:00",
+            "start": "2026-02-10T04:25:05.000000",
+            "stats": {
+                "compressed_size": 20462059363,
+                "deduplicated_size": 313748352,
+                "nfiles": 158240,
+                "original_size": 33771800322
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps03::2026-02-10T08+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 85.791017,
+            "end": "2026-02-10T08:26:31.000000",
+            "hostname": "vps03",
+            "id": "929070c967f56ada5361dbb27c67a683872e321316ab5e984136a120a71b8330",
+            "limits": {
+                "max_archive_size": 0.0005625735790975925
+            },
+            "name": "2026-02-10T08+01:00",
+            "start": "2026-02-10T08:25:06.000000",
+            "stats": {
+                "compressed_size": 20470893923,
+                "deduplicated_size": 313282777,
+                "nfiles": 158242,
+                "original_size": 33800052101
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps03::2026-02-10T12+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 84.571549,
+            "end": "2026-02-10T12:26:30.000000",
+            "hostname": "vps03",
+            "id": "e2e40cc7135ba8384db6a309816965958c84d0e12f05f4d7a23a7e3934ca5d42",
+            "limits": {
+                "max_archive_size": 0.0005629073657608984
+            },
+            "name": "2026-02-10T12+01:00",
+            "start": "2026-02-10T12:25:05.000000",
+            "stats": {
+                "compressed_size": 20491933214,
+                "deduplicated_size": 392939893,
+                "nfiles": 158241,
+                "original_size": 33837955698
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps03::2026-02-10T16+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 100.19057,
+            "end": "2026-02-10T16:26:46.000000",
+            "hostname": "vps03",
+            "id": "0a1158fcf529337cc498674e515b9a1a17c36a1c22b2cb6c538a0abf362540b9",
+            "limits": {
+                "max_archive_size": 0.0005627643143337673
+            },
+            "name": "2026-02-10T16+01:00",
+            "start": "2026-02-10T16:25:05.000000",
+            "stats": {
+                "compressed_size": 20498392254,
+                "deduplicated_size": 385457340,
+                "nfiles": 158241,
+                "original_size": 33872602483
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps03::2026-02-10T20+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 102.623797,
+            "end": "2026-02-10T20:26:49.000000",
+            "hostname": "vps03",
+            "id": "d3a08d5b4adbd9581d7465497b57c40cc0a5227bde2ae78b1b236f1a41a89a0a",
+            "limits": {
+                "max_archive_size": 0.000562811998142811
+            },
+            "name": "2026-02-10T20+01:00",
+            "start": "2026-02-10T20:25:06.000000",
+            "stats": {
+                "compressed_size": 20494719837,
+                "deduplicated_size": 323578651,
+                "nfiles": 158241,
+                "original_size": 33894024911
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps03::2026-02-11T00+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 85.278191,
+            "end": "2026-02-11T00:26:31.000000",
+            "hostname": "vps03",
+            "id": "47a35d876bc3197a4036e21b1ae98b38844f886d42d6427723dc76f86fa17027",
+            "limits": {
+                "max_archive_size": 0.0005648624019316901
+            },
+            "name": "2026-02-11T00+01:00",
+            "start": "2026-02-11T00:25:06.000000",
+            "stats": {
+                "compressed_size": 20509852168,
+                "deduplicated_size": 327431307,
+                "nfiles": 158246,
+                "original_size": 33931663433
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps03::2026-02-11T04+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 76.20353,
+            "end": "2026-02-11T04:26:22.000000",
+            "hostname": "vps03",
+            "id": "91a04d53485d3fe29feb993a705f5211b1c18a91e5e2dc9ee9ff2f0f5f9f15f1",
+            "limits": {
+                "max_archive_size": 0.0005627643143337673
+            },
+            "name": "2026-02-11T04+01:00",
+            "start": "2026-02-11T04:25:06.000000",
+            "stats": {
+                "compressed_size": 20514337522,
+                "deduplicated_size": 332402421,
+                "nfiles": 158246,
+                "original_size": 33945535084
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps03::2026-02-11T08+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 83.097551,
+            "end": "2026-02-11T08:26:28.000000",
+            "hostname": "vps03",
+            "id": "8fcd6fda2eabfc4dfe6e74b4d6c4524c8f198cc3625273f65d0f48133666ce1e",
+            "limits": {
+                "max_archive_size": 0.0005630981009970732
+            },
+            "name": "2026-02-11T08+01:00",
+            "start": "2026-02-11T08:25:05.000000",
+            "stats": {
+                "compressed_size": 20524282916,
+                "deduplicated_size": 388308612,
+                "nfiles": 158247,
+                "original_size": 33973829467
+            },
+            "username": "root"
+        }
+    ],
+    "cache": {
+        "path": "/root/.cache/borg/ec504d9c7caae207b280dedff79f6ac6aa9ea20210a58925417a7f5db5a16072",
+        "stats": {
+            "total_chunks": 206097218,
+            "total_csize": 30423342246916,
+            "total_size": 60577833976896,
+            "total_unique_chunks": 676899,
+            "unique_csize": 323861982730,
+            "unique_size": 538153457315
+        }
+    },
+    "encryption": {
+        "mode": "repokey"
+    },
+    "repository": {
+        "id": "ec504d9c7caae207b280dedff79f6ac6aa9ea20210a58925417a7f5db5a16072",
+        "last_modified": "2026-02-11T08:26:28.000000",
+        "location": "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps03"
+    }
+}
+,
+{
+    "archives": [
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps04::2026-02-09T20+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 305.687388,
+            "end": "2026-02-09T20:05:11.000000",
+            "hostname": "vps04",
+            "id": "533013a22c45c11ac44b0566bc6d4464b87b25ca1d7dd38d2e5f20965f750453",
+            "limits": {
+                "max_archive_size": 0.00349002566771757
+            },
+            "name": "2026-02-09T20+01:00",
+            "start": "2026-02-09T20:00:05.000000",
+            "stats": {
+                "compressed_size": 32316527953,
+                "deduplicated_size": 30626083,
+                "nfiles": 954879,
+                "original_size": 62453003565
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps04::2026-02-10T00+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 318.266504,
+            "end": "2026-02-10T00:05:27.000000",
+            "hostname": "vps04",
+            "id": "250a33c9c55680d854c4181a314d533fa2495f91bc20f55760ec01428c43bbe0",
+            "limits": {
+                "max_archive_size": 0.003495032467667159
+            },
+            "name": "2026-02-10T00+01:00",
+            "start": "2026-02-10T00:00:09.000000",
+            "stats": {
+                "compressed_size": 32321914757,
+                "deduplicated_size": 33300477,
+                "nfiles": 954883,
+                "original_size": 62497041774
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps04::2026-02-10T04+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 342.390574,
+            "end": "2026-02-10T04:05:49.000000",
+            "hostname": "vps04",
+            "id": "e6604d21f4db0c97e70cccf808ac3c7343a9731c19fcb3a98102a60891a362e5",
+            "limits": {
+                "max_archive_size": 0.0034883567344010406
+            },
+            "name": "2026-02-10T04+01:00",
+            "start": "2026-02-10T04:00:06.000000",
+            "stats": {
+                "compressed_size": 32328378667,
+                "deduplicated_size": 32833127,
+                "nfiles": 954895,
+                "original_size": 62549662564
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps04::2026-02-10T08+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 319.799815,
+            "end": "2026-02-10T08:05:27.000000",
+            "hostname": "vps04",
+            "id": "156050f1212aa86361cb2f007ec1af47835299fbb2f38fe62e347b459f92a448",
+            "limits": {
+                "max_archive_size": 0.003495032467667159
+            },
+            "name": "2026-02-10T08+01:00",
+            "start": "2026-02-10T08:00:07.000000",
+            "stats": {
+                "compressed_size": 32329844334,
+                "deduplicated_size": 29335315,
+                "nfiles": 954898,
+                "original_size": 62557786633
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps04::2026-02-10T12+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 309.35108,
+            "end": "2026-02-10T12:05:16.000000",
+            "hostname": "vps04",
+            "id": "3f6612468c056be1a0f78e5119d81281b87fbe4992e360bb416f36be8a4e4e7e",
+            "limits": {
+                "max_archive_size": 0.003493363534350629
+            },
+            "name": "2026-02-10T12+01:00",
+            "start": "2026-02-10T12:00:07.000000",
+            "stats": {
+                "compressed_size": 32331594383,
+                "deduplicated_size": 30003329,
+                "nfiles": 954909,
+                "original_size": 62572054721
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps04::2026-02-10T16+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 328.301675,
+            "end": "2026-02-10T16:05:38.000000",
+            "hostname": "vps04",
+            "id": "721e0e9e59aace771770958bc4b1f15f4add9c49b7444b9c6fd516b04b0f8624",
+            "limits": {
+                "max_archive_size": 0.0034916946010340997
+            },
+            "name": "2026-02-10T16+01:00",
+            "start": "2026-02-10T16:00:09.000000",
+            "stats": {
+                "compressed_size": 32339456655,
+                "deduplicated_size": 26124501,
+                "nfiles": 954916,
+                "original_size": 62628901012
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps04::2026-02-10T20+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 320.481973,
+            "end": "2026-02-10T20:05:30.000000",
+            "hostname": "vps04",
+            "id": "fc2b22251e7f1f13621dcab98d1b3d35bdef21d92591ea702e2791854db3e51e",
+            "limits": {
+                "max_archive_size": 0.0034883567344010406
+            },
+            "name": "2026-02-10T20+01:00",
+            "start": "2026-02-10T20:00:10.000000",
+            "stats": {
+                "compressed_size": 32347107758,
+                "deduplicated_size": 28394278,
+                "nfiles": 954929,
+                "original_size": 62675275521
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps04::2026-02-11T00+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 303.162556,
+            "end": "2026-02-11T00:05:14.000000",
+            "hostname": "vps04",
+            "id": "9fc29f021c33d301420632af818624e093e12209d523cda58f4cdebf1ab0f3a2",
+            "limits": {
+                "max_archive_size": 0.003486687801084511
+            },
+            "name": "2026-02-11T00+01:00",
+            "start": "2026-02-11T00:00:11.000000",
+            "stats": {
+                "compressed_size": 32349557604,
+                "deduplicated_size": 30413646,
+                "nfiles": 954932,
+                "original_size": 62692236312
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps04::2026-02-11T04+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 272.771214,
+            "end": "2026-02-11T04:04:38.000000",
+            "hostname": "vps04",
+            "id": "f88af71461af6761cd79481d7fcf6029aac06bfe44810d42a9fac60cdd7d2a11",
+            "limits": {
+                "max_archive_size": 0.0034883567344010406
+            },
+            "name": "2026-02-11T04+01:00",
+            "start": "2026-02-11T04:00:06.000000",
+            "stats": {
+                "compressed_size": 32351590274,
+                "deduplicated_size": 30710835,
+                "nfiles": 954939,
+                "original_size": 62703995728
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps04::2026-02-11T08+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 285.443881,
+            "end": "2026-02-11T08:04:53.000000",
+            "hostname": "vps04",
+            "id": "e04cf989e735760cb1c045d2224a0b0cf4305d4d7ce0126cd53f7ebb9fb81964",
+            "limits": {
+                "max_archive_size": 0.00349002566771757
+            },
+            "name": "2026-02-11T08+01:00",
+            "start": "2026-02-11T08:00:08.000000",
+            "stats": {
+                "compressed_size": 32352713472,
+                "deduplicated_size": 33384969,
+                "nfiles": 954952,
+                "original_size": 62710696289
+            },
+            "username": "root"
+        }
+    ],
+    "cache": {
+        "path": "/root/.cache/borg/e1a6442101cf0a5bfbab186e2e5004f654a5de91b51d7029cc56f5fd8c87527d",
+        "stats": {
+            "total_chunks": 1129893639,
+            "total_csize": 38719108996185,
+            "total_size": 69241970458124,
+            "total_unique_chunks": 684487,
+            "unique_csize": 60699504440,
+            "unique_size": 359635562371
+        }
+    },
+    "encryption": {
+        "mode": "repokey"
+    },
+    "repository": {
+        "id": "e1a6442101cf0a5bfbab186e2e5004f654a5de91b51d7029cc56f5fd8c87527d",
+        "last_modified": "2026-02-11T08:04:53.000000",
+        "location": "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps04"
+    }
+}
+,
+{
+    "archives": [
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps05::2026-02-09T20+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 133.539405,
+            "end": "2026-02-09T20:02:29.000000",
+            "hostname": "vps05",
+            "id": "7b07427d779fcd320563af880245a02c6cd4cda20bd376b48959c201001a3642",
+            "limits": {
+                "max_archive_size": 0.0013036276554457605
+            },
+            "name": "2026-02-09T20+01:00",
+            "start": "2026-02-09T20:00:16.000000",
+            "stats": {
+                "compressed_size": 10667715258,
+                "deduplicated_size": 10441717,
+                "nfiles": 376732,
+                "original_size": 21824606668
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps05::2026-02-10T00+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 121.945037,
+            "end": "2026-02-10T00:03:16.000000",
+            "hostname": "vps05",
+            "id": "eb4a289cacd4ece42d40a39ee1841a75479d49bbc243d1bf25454f50e32a8c11",
+            "limits": {
+                "max_archive_size": 0.0013024832440287116
+            },
+            "name": "2026-02-10T00+01:00",
+            "start": "2026-02-10T00:01:14.000000",
+            "stats": {
+                "compressed_size": 10668561838,
+                "deduplicated_size": 9685103,
+                "nfiles": 376749,
+                "original_size": 21832572893
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps05::2026-02-10T04+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 120.091169,
+            "end": "2026-02-10T04:02:16.000000",
+            "hostname": "vps05",
+            "id": "779a8b1236d89ed55653d1cffcaf048549016f2972fd60522ad7aaec8b1b4bee",
+            "limits": {
+                "max_archive_size": 0.0013064410001793387
+            },
+            "name": "2026-02-10T04+01:00",
+            "start": "2026-02-10T04:00:16.000000",
+            "stats": {
+                "compressed_size": 10668570770,
+                "deduplicated_size": 10080891,
+                "nfiles": 376789,
+                "original_size": 21831519509
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps05::2026-02-10T08+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 133.242083,
+            "end": "2026-02-10T08:03:25.000000",
+            "hostname": "vps05",
+            "id": "214caab038add9739ff5cbdc6b334fe0c0e311adead35f2c654a5d00b928733a",
+            "limits": {
+                "max_archive_size": 0.0012985254878780843
+            },
+            "name": "2026-02-10T08+01:00",
+            "start": "2026-02-10T08:01:12.000000",
+            "stats": {
+                "compressed_size": 10668888392,
+                "deduplicated_size": 11112984,
+                "nfiles": 374758,
+                "original_size": 21834658453
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps05::2026-02-10T12+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 120.120721,
+            "end": "2026-02-10T12:03:13.000000",
+            "hostname": "vps05",
+            "id": "8c939784b39e574426ec71d3773e13eda77b73e22c447e1b766a7f68d9baac5f",
+            "limits": {
+                "max_archive_size": 0.0013054873239984647
+            },
+            "name": "2026-02-10T12+01:00",
+            "start": "2026-02-10T12:01:12.000000",
+            "stats": {
+                "compressed_size": 10669971939,
+                "deduplicated_size": 13182390,
+                "nfiles": 374790,
+                "original_size": 21845043476
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps05::2026-02-10T16+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 136.766459,
+            "end": "2026-02-10T16:02:33.000000",
+            "hostname": "vps05",
+            "id": "27ed7508efdc6a265dbbd52d828b1850e57e2aa969e8f62c726da0878ca27f8e",
+            "limits": {
+                "max_archive_size": 0.001303389236400542
+            },
+            "name": "2026-02-10T16+01:00",
+            "start": "2026-02-10T16:00:17.000000",
+            "stats": {
+                "compressed_size": 10671291902,
+                "deduplicated_size": 12283373,
+                "nfiles": 374828,
+                "original_size": 21857089183
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps05::2026-02-10T20+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 135.166346,
+            "end": "2026-02-10T20:02:30.000000",
+            "hostname": "vps05",
+            "id": "98ae72d5f675a8059a7d41ecfe1bcdeffaea3477d6862d09e75e49ced7266140",
+            "limits": {
+                "max_archive_size": 0.0013019587221292307
+            },
+            "name": "2026-02-10T20+01:00",
+            "start": "2026-02-10T20:00:15.000000",
+            "stats": {
+                "compressed_size": 10745858597,
+                "deduplicated_size": 12291754,
+                "nfiles": 374892,
+                "original_size": 21948786413
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps05::2026-02-11T00+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 119.392861,
+            "end": "2026-02-11T00:03:13.000000",
+            "hostname": "vps05",
+            "id": "f66ffdd89df1b1057a7aa2233d2c173ea5336a8b83a6abea45d861ed910c2111",
+            "limits": {
+                "max_archive_size": 0.0013008619945212257
+            },
+            "name": "2026-02-11T00+01:00",
+            "start": "2026-02-11T00:01:14.000000",
+            "stats": {
+                "compressed_size": 10746629830,
+                "deduplicated_size": 11379377,
+                "nfiles": 374921,
+                "original_size": 21956660774
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps05::2026-02-11T04+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 124.412104,
+            "end": "2026-02-11T04:02:21.000000",
+            "hostname": "vps05",
+            "id": "36830104b02be3e975700ac0f3866abd1219225bde24d7f8c9e3ce0229bbdca2",
+            "limits": {
+                "max_archive_size": 0.0013031985011643672
+            },
+            "name": "2026-02-11T04+01:00",
+            "start": "2026-02-11T04:00:17.000000",
+            "stats": {
+                "compressed_size": 10746858354,
+                "deduplicated_size": 12009925,
+                "nfiles": 374956,
+                "original_size": 21957122839
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps05::2026-02-11T08+01:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 134.35949,
+            "end": "2026-02-11T08:04:38.000000",
+            "hostname": "vps05",
+            "id": "0ff522193179d840ed6ef58ff8edcff4dcc1cfbe8ccccb9655d6aaec437325fa",
+            "limits": {
+                "max_archive_size": 0.0013027216630739301
+            },
+            "name": "2026-02-11T08+01:00",
+            "start": "2026-02-11T08:02:23.000000",
+            "stats": {
+                "compressed_size": 10675253719,
+                "deduplicated_size": 150780064,
+                "nfiles": 375021,
+                "original_size": 21881974562
+            },
+            "username": "root"
+        }
+    ],
+    "cache": {
+        "path": "/root/.cache/borg/5db0b8a54127570a078e6a435f5bb23cd3f955d16c364b4f6bd41943e9a4b8c6",
+        "stats": {
+            "total_chunks": 350010502,
+            "total_csize": 9144331063677,
+            "total_size": 18300994112262,
+            "total_unique_chunks": 263584,
+            "unique_csize": 38739425232,
+            "unique_size": 106880256735
+        }
+    },
+    "encryption": {
+        "mode": "repokey"
+    },
+    "repository": {
+        "id": "5db0b8a54127570a078e6a435f5bb23cd3f955d16c364b4f6bd41943e9a4b8c6",
+        "last_modified": "2026-02-11T08:04:38.000000",
+        "location": "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps05"
+    }
+}
+,
+{
+    "archives": [
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps07::2026-02-09T12-06:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 95.95076,
+            "end": "2026-02-09T19:01:44.000000",
+            "hostname": "vps07",
+            "id": "b94f4d6d5b515a8b9f8bf3e98a44200fa352bbbbd64b37e9b24a24705c23d633",
+            "limits": {
+                "max_archive_size": 0.0007860199082763786
+            },
+            "name": "2026-02-09T12-06:00",
+            "start": "2026-02-09T19:00:08.000000",
+            "stats": {
+                "compressed_size": 16349761601,
+                "deduplicated_size": 10252610,
+                "nfiles": 275725,
+                "original_size": 23391307407
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps07::2026-02-09T16-06:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 98.530757,
+            "end": "2026-02-09T23:01:49.000000",
+            "hostname": "vps07",
+            "id": "716c57cfbf4328ac16c5ad0b68adb58e135928a657b1afd601bc832ad14e407e",
+            "limits": {
+                "max_archive_size": 0.000784350974959849
+            },
+            "name": "2026-02-09T16-06:00",
+            "start": "2026-02-09T23:00:11.000000",
+            "stats": {
+                "compressed_size": 16388244533,
+                "deduplicated_size": 13893373,
+                "nfiles": 275727,
+                "original_size": 23424565511
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps07::2026-02-09T20-06:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 96.582765,
+            "end": "2026-02-10T03:01:43.000000",
+            "hostname": "vps07",
+            "id": "a28246afde53f0e4fdcce1f8eefe39ba878229dcda0be4983c04eb8080ae36fa",
+            "limits": {
+                "max_archive_size": 0.0007827297254523631
+            },
+            "name": "2026-02-09T20-06:00",
+            "start": "2026-02-10T03:00:07.000000",
+            "stats": {
+                "compressed_size": 16389004689,
+                "deduplicated_size": 11084086,
+                "nfiles": 275727,
+                "original_size": 23427364377
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps07::2026-02-10T00-06:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 97.184814,
+            "end": "2026-02-10T07:01:47.000000",
+            "hostname": "vps07",
+            "id": "4d3bd84514280a7fc68432939a2b618087d6c3fe1f2b7a02bb7b023986a36f8d",
+            "limits": {
+                "max_archive_size": 0.0007857814892311601
+            },
+            "name": "2026-02-10T00-06:00",
+            "start": "2026-02-10T07:00:09.000000",
+            "stats": {
+                "compressed_size": 16368685081,
+                "deduplicated_size": 9838731,
+                "nfiles": 275727,
+                "original_size": 23391202177
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps07::2026-02-10T04-06:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 98.161573,
+            "end": "2026-02-10T11:01:46.000000",
+            "hostname": "vps07",
+            "id": "d864185653f855cb2cd11ff1deeaeb3f6b44dad43c611db7a27544781fd5ed7f",
+            "limits": {
+                "max_archive_size": 0.0007809654245177463
+            },
+            "name": "2026-02-10T04-06:00",
+            "start": "2026-02-10T11:00:08.000000",
+            "stats": {
+                "compressed_size": 16369832153,
+                "deduplicated_size": 14663256,
+                "nfiles": 275725,
+                "original_size": 23395329380
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps07::2026-02-10T08-06:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 99.714911,
+            "end": "2026-02-10T15:01:51.000000",
+            "hostname": "vps07",
+            "id": "09522949c57fb8d907e0df64a4482bac1e61709023d604b0c64084d2a7e54926",
+            "limits": {
+                "max_archive_size": 0.0007809654245177463
+            },
+            "name": "2026-02-10T08-06:00",
+            "start": "2026-02-10T15:00:12.000000",
+            "stats": {
+                "compressed_size": 16370358254,
+                "deduplicated_size": 10272505,
+                "nfiles": 275715,
+                "original_size": 23397228850
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps07::2026-02-10T12-06:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 96.792783,
+            "end": "2026-02-10T19:01:45.000000",
+            "hostname": "vps07",
+            "id": "aca549f47f84e939c44cad2ccfbff9d344f9ffd2920364f353b94df38bc89c07",
+            "limits": {
+                "max_archive_size": 0.0007808223730906151
+            },
+            "name": "2026-02-10T12-06:00",
+            "start": "2026-02-10T19:00:08.000000",
+            "stats": {
+                "compressed_size": 16370877483,
+                "deduplicated_size": 9471387,
+                "nfiles": 275718,
+                "original_size": 23399638833
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps07::2026-02-10T16-06:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 92.446093,
+            "end": "2026-02-10T23:01:40.000000",
+            "hostname": "vps07",
+            "id": "3c4f364b16e24a034985f108c6e1df0624d6a336c3201c00ab3c8ab1f99072f1",
+            "limits": {
+                "max_archive_size": 0.0007808700568996588
+            },
+            "name": "2026-02-10T16-06:00",
+            "start": "2026-02-10T23:00:08.000000",
+            "stats": {
+                "compressed_size": 16371349517,
+                "deduplicated_size": 8681225,
+                "nfiles": 275718,
+                "original_size": 23401509053
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps07::2026-02-10T20-06:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 102.567107,
+            "end": "2026-02-11T03:01:50.000000",
+            "hostname": "vps07",
+            "id": "cc532b529b97482c9b79eb0cc7ff0b46e2be03ea7569cb23ba129c756f0c17de",
+            "limits": {
+                "max_archive_size": 0.000782920460688538
+            },
+            "name": "2026-02-10T20-06:00",
+            "start": "2026-02-11T03:00:07.000000",
+            "stats": {
+                "compressed_size": 16371846691,
+                "deduplicated_size": 9624128,
+                "nfiles": 275724,
+                "original_size": 23403854797
+            },
+            "username": "root"
+        },
+        {
+            "chunker_params": [
+                "buzhash",
+                19,
+                23,
+                21,
+                4095
+            ],
+            "command_line": [
+                "/usr/bin/borg",
+                "create",
+                "--stats",
+                "--verbose",
+                "--exclude",
+                "/VPS",
+                "--exclude",
+                "/proc",
+                "--exclude",
+                "/sys",
+                "--exclude",
+                "/dev",
+                "--exclude",
+                "/swapfile",
+                "--exclude",
+                "/run",
+                "--exclude",
+                "/mnt",
+                "--exclude",
+                "/media",
+                "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps07::2026-02-11T00-06:00",
+                "/"
+            ],
+            "comment": "",
+            "duration": 102.068614,
+            "end": "2026-02-11T07:01:51.000000",
+            "hostname": "vps07",
+            "id": "91561a10158ac41b2543a3efc23179f7d24113b5f7aa2281ed1d0795046d82d2",
+            "limits": {
+                "max_archive_size": 0.0007841125559146305
+            },
+            "name": "2026-02-11T00-06:00",
+            "start": "2026-02-11T07:00:09.000000",
+            "stats": {
+                "compressed_size": 16371762812,
+                "deduplicated_size": 15677707,
+                "nfiles": 275725,
+                "original_size": 23393488526
+            },
+            "username": "root"
+        }
+    ],
+    "cache": {
+        "path": "/root/.cache/borg/795283d17ae9cdd048115e4ec0e94a0d1fb157022f985470e455ba35eb90cc72",
+        "stats": {
+            "total_chunks": 253645474,
+            "total_csize": 17388836255357,
+            "total_size": 24421825944436,
+            "total_unique_chunks": 221552,
+            "unique_csize": 33229739912,
+            "unique_size": 177966664556
+        }
+    },
+    "encryption": {
+        "mode": "repokey"
+    },
+    "repository": {
+        "id": "795283d17ae9cdd048115e4ec0e94a0d1fb157022f985470e455ba35eb90cc72",
+        "last_modified": "2026-02-11T07:01:52.000000",
+        "location": "ssh://u475925@u475925.your-storagebox.de:23/home/BACKUP/vps07"
+    }
+}
+,
+]

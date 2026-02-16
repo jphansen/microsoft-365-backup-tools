@@ -1,0 +1,29 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2024-10-19T23:41:47Z",
+  "description": "",
+  "id": "b!5VahE88bX02RJA1zcfjztFOw-2JEDK5Etn59TTTXo0s8YWCBv3WXQJyRqrGnIR0H",
+  "lastModifiedDateTime": "2025-08-25T06:19:58Z",
+  "name": "Documents",
+  "webUrl": "https://honnimar.sharepoint.com/sites/HonniGroup/Shared%20Documents",
+  "driveType": "documentLibrary",
+  "createdBy": {
+    "user": {
+      "displayName": "System Account"
+    }
+  },
+  "owner": {
+    "group": {
+      "email": "HonniGroup@Honnimar.onmicrosoft.com",
+      "id": "211ca14b-994e-43bb-ac1f-bbb54768c6fd",
+      "displayName": "Honni Group Owners"
+    }
+  },
+  "quota": {
+    "deleted": 0,
+    "remaining": 27487776281171,
+    "state": "normal",
+    "total": 27487790694400,
+    "used": 14413229
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "site_id": "honnimar.sharepoint.com,a7ae3fed-0baa-411b-8a42-4ec12fb39a91,156136ff-6721-4cac-bfd3-c9e8fc069af4",
+  "site_name": "Honnicloud Support",
+  "site_url": "https://honnimar.sharepoint.com/sites/support",
+  "backup_date": "2026-02-11T09:04:32.878318",
+  "backup_type": "incremental",
+  "backup_method": "Microsoft Graph API (Incremental)"
+}

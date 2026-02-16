@@ -1,0 +1,8 @@
+{
+  "site_id": "honnimar.sharepoint.com,617ce65e-4330-4e8c-9f73-1ea664ab89b0,3cbee5d4-3809-4add-b97d-0f157b3f6be4",
+  "site_name": "Honnicloud Intranet-Notifications Monitoring",
+  "site_url": "https://honnimar.sharepoint.com/sites/HonnicloudIntranet-NotificationsMonitoring",
+  "backup_date": "2026-02-11T09:04:50.561801",
+  "backup_type": "incremental",
+  "backup_method": "Microsoft Graph API (Incremental)"
+}

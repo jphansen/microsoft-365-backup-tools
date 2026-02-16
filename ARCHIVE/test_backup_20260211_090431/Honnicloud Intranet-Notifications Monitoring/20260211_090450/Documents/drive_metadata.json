@@ -1,0 +1,34 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2025-06-05T23:22:07Z",
+  "description": "",
+  "id": "b!XuZ8YTBDjE6fcx6mZKuJsNTlvjwJON1KuX0PFXs_a-RkUM4VxKp9SYH22yK3u-Sc",
+  "lastModifiedDateTime": "2025-06-05T23:22:38Z",
+  "name": "Documents",
+  "webUrl": "https://honnimar.sharepoint.com/sites/HonnicloudIntranet-NotificationsMonitoring/Shared%20Documents",
+  "driveType": "documentLibrary",
+  "createdBy": {
+    "user": {
+      "displayName": "System Account"
+    }
+  },
+  "lastModifiedBy": {
+    "user": {
+      "displayName": "System Account"
+    }
+  },
+  "owner": {
+    "user": {
+      "email": "jph@honnimar.com",
+      "id": "7e695db7-b22c-4171-82ca-6ec0ab1e913c",
+      "displayName": "Jens Peter Hansen"
+    }
+  },
+  "quota": {
+    "deleted": 0,
+    "remaining": 27487790010717,
+    "state": "normal",
+    "total": 27487790694400,
+    "used": 683683
+  }
+}

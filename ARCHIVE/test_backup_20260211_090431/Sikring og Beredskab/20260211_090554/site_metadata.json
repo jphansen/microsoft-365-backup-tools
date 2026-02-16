@@ -1,0 +1,8 @@
+{
+  "site_id": "honnimar.sharepoint.com,6109d146-6eb5-4e72-9253-40f796829fb1,7c2d0c2f-0078-4202-a0de-ea97d3ebfce2",
+  "site_name": "Sikring og Beredskab",
+  "site_url": "https://honnimar.sharepoint.com/sites/DemoHonniMar",
+  "backup_date": "2026-02-11T09:05:54.958223",
+  "backup_type": "incremental",
+  "backup_method": "Microsoft Graph API (Incremental)"
+}

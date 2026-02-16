@@ -1,0 +1,8 @@
+{
+  "site_id": "honnimar.sharepoint.com,847aa94a-d1f7-462e-8fae-0ff8033a627e,2b400c88-08c4-40de-b0f5-9ff0241d5ee0",
+  "site_name": "Honnnicloud Employee Handbook",
+  "site_url": "https://honnimar.sharepoint.com/sites/HonnnicloudEmployeeHandbook",
+  "backup_date": "2026-02-11T09:04:51.189360",
+  "backup_type": "incremental",
+  "backup_method": "Microsoft Graph API (Incremental)"
+}

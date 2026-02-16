@@ -1,0 +1,28 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2024-10-27T00:15:24Z",
+  "description": "A catalog to store apps for Office.",
+  "id": "b!pPg3CBFwDEmmXPO18cnRewsFoF7_aGJCmw8vJHycRda-IJ8ksocgT7RPb1gnSz8J",
+  "lastModifiedDateTime": "2024-10-27T00:15:24Z",
+  "name": "Apps for Office",
+  "webUrl": "https://honnimar.sharepoint.com/sites/appcatalog/AgaveCatalog",
+  "driveType": "documentLibrary",
+  "createdBy": {
+    "user": {
+      "displayName": "System Account"
+    }
+  },
+  "owner": {
+    "group": {
+      "id": "38d8248f-a8d1-4fc1-afbe-fc8f42025aa2",
+      "displayName": "Global Administrator"
+    }
+  },
+  "quota": {
+    "deleted": 2860056,
+    "remaining": 27487771352670,
+    "state": "normal",
+    "total": 27487790694400,
+    "used": 16481674
+  }
+}

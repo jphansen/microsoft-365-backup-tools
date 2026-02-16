@@ -1,0 +1,31 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2025-09-15T08:07:11Z",
+  "description": "Personal Cache List",
+  "id": "b!Zc-NEIjvJEOUk36C8Wn1VuyHnQduFN9LvgNVEg87K743_g6Hrbh5RLtU1XctJbeC",
+  "lastModifiedDateTime": "2025-10-22T12:32:56Z",
+  "name": "PersonalCacheLibrary",
+  "webUrl": "https://honnimar-my.sharepoint.com/personal/ahh_honnimar_com/Lists/PersonalCacheLibrary",
+  "driveType": "business",
+  "createdBy": {
+    "user": {
+      "email": "ahh@honnimar.com",
+      "id": "e78b1faa-8d13-4859-b928-3c094c32ebcc",
+      "displayName": "Anders Hasager Helles\u00f8e"
+    }
+  },
+  "owner": {
+    "user": {
+      "email": "ahh@honnimar.com",
+      "id": "e78b1faa-8d13-4859-b928-3c094c32ebcc",
+      "displayName": "Anders Hasager Helles\u00f8e"
+    }
+  },
+  "quota": {
+    "deleted": 0,
+    "remaining": 1087951086148,
+    "state": "normal",
+    "total": 1099511627776,
+    "used": 11560541628
+  }
+}

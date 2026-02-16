@@ -1,0 +1,8 @@
+{
+  "site_id": "honnimar.sharepoint.com,2d4841ee-c497-40c5-a8db-8f374641d76d,13edbc16-f883-40af-bc11-9d099c471a8a",
+  "site_name": "Ny Livsstil",
+  "site_url": "https://honnimar.sharepoint.com/sites/Livsstil",
+  "backup_date": "2026-02-11T09:05:29.962749",
+  "backup_type": "incremental",
+  "backup_method": "Microsoft Graph API (Incremental)"
+}

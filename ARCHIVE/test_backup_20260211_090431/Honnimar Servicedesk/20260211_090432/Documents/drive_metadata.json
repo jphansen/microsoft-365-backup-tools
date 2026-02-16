@@ -1,0 +1,36 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2025-10-31T23:58:00Z",
+  "description": "",
+  "id": "b!uef7yArckk-0NvP6iJkODp1lzAVVOFRJhlYLrarLyoYuoFfx0OFiT5e6fb6hnkic",
+  "lastModifiedDateTime": "2025-11-26T12:24:03Z",
+  "name": "Documents",
+  "webUrl": "https://honnimar.sharepoint.com/sites/HonnimarServicedesk/Shared%20Documents",
+  "driveType": "documentLibrary",
+  "createdBy": {
+    "user": {
+      "displayName": "System Account"
+    }
+  },
+  "lastModifiedBy": {
+    "user": {
+      "email": "mcc@honnicloud.com",
+      "id": "82689372-060e-411a-b774-4124039c85f7",
+      "displayName": "Malene Clausen"
+    }
+  },
+  "owner": {
+    "group": {
+      "email": "HonnimarServicedesk@Honnimar.onmicrosoft.com",
+      "id": "4049933a-ffbd-4bd9-8deb-7081aa77a303",
+      "displayName": "Honnimar Servicedesk Owners"
+    }
+  },
+  "quota": {
+    "deleted": 0,
+    "remaining": 27487781206757,
+    "state": "normal",
+    "total": 27487790694400,
+    "used": 9487643
+  }
+}

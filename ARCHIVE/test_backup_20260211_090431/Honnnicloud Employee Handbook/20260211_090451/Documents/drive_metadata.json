@@ -1,0 +1,29 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2025-05-22T01:12:44Z",
+  "description": "",
+  "id": "b!Sql6hPfRLkaPrg_4AzpifogMQCvECN5AsPWf8CQdXuCt4Sr8owXtTYOm27j6FH-n",
+  "lastModifiedDateTime": "2025-05-22T01:12:44Z",
+  "name": "Documents",
+  "webUrl": "https://honnimar.sharepoint.com/sites/HonnnicloudEmployeeHandbook/Shared%20Documents",
+  "driveType": "documentLibrary",
+  "createdBy": {
+    "user": {
+      "displayName": "System Account"
+    }
+  },
+  "owner": {
+    "user": {
+      "email": "mcc@honnicloud.com",
+      "id": "82689372-060e-411a-b774-4124039c85f7",
+      "displayName": "Malene Clausen"
+    }
+  },
+  "quota": {
+    "deleted": 0,
+    "remaining": 27487781255628,
+    "state": "normal",
+    "total": 27487790694400,
+    "used": 9438772
+  }
+}

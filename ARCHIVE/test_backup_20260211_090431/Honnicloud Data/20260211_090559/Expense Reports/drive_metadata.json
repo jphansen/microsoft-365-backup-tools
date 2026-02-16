@@ -1,0 +1,38 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2025-03-03T12:29:17Z",
+  "description": "",
+  "id": "b!bMtRYQvp6kiT-J1jkSZysZS7yCW-Rq1Aot_7nbwJis9teWHUoP6jRpGmt-_xVwHC",
+  "lastModifiedDateTime": "2026-02-10T09:18:32Z",
+  "name": "Expense Reports",
+  "webUrl": "https://honnimar.sharepoint.com/sites/HonnicloudData/Expense%20Reports",
+  "driveType": "documentLibrary",
+  "createdBy": {
+    "user": {
+      "email": "mcc@honnicloud.com",
+      "id": "82689372-060e-411a-b774-4124039c85f7",
+      "displayName": "Malene Clausen"
+    }
+  },
+  "lastModifiedBy": {
+    "user": {
+      "email": "mcc@honnicloud.com",
+      "id": "82689372-060e-411a-b774-4124039c85f7",
+      "displayName": "Malene Clausen"
+    }
+  },
+  "owner": {
+    "user": {
+      "email": "mcc@honnicloud.com",
+      "id": "82689372-060e-411a-b774-4124039c85f7",
+      "displayName": "Malene Clausen"
+    }
+  },
+  "quota": {
+    "deleted": 5734783,
+    "remaining": 27487668702603,
+    "state": "normal",
+    "total": 27487790694400,
+    "used": 116257014
+  }
+}

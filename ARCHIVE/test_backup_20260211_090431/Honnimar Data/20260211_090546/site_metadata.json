@@ -1,0 +1,8 @@
+{
+  "site_id": "honnimar.sharepoint.com,ec8598f3-f87b-4f8f-8018-6d067df466c7,fe7271a5-21f5-44b6-b839-17a8a4915262",
+  "site_name": "Honnimar Data",
+  "site_url": "https://honnimar.sharepoint.com/sites/HonniMarData",
+  "backup_date": "2026-02-11T09:05:46.926069",
+  "backup_type": "incremental",
+  "backup_method": "Microsoft Graph API (Incremental)"
+}

@@ -1,0 +1,36 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2024-09-28T23:28:15Z",
+  "description": "",
+  "id": "b!82EIyS8pR0eg1BvrtNdV8z9CQpiUQepBjkeplN9xYK0lcGaL1TDqRqBwkbba6dy4",
+  "lastModifiedDateTime": "2026-02-10T09:18:35Z",
+  "name": "OneDrive",
+  "webUrl": "https://honnimar-my.sharepoint.com/personal/honnisystem_honnimar_com/Documents",
+  "driveType": "business",
+  "createdBy": {
+    "user": {
+      "displayName": "System Account"
+    }
+  },
+  "lastModifiedBy": {
+    "user": {
+      "email": "honnisystem@honnimar.com",
+      "id": "c9b0f32f-5f2b-4d92-b3c1-e54f7cf52790",
+      "displayName": "Honni System"
+    }
+  },
+  "owner": {
+    "user": {
+      "email": "honnisystem@honnimar.com",
+      "id": "c9b0f32f-5f2b-4d92-b3c1-e54f7cf52790",
+      "displayName": "Honni System"
+    }
+  },
+  "quota": {
+    "deleted": 24926833,
+    "remaining": 1099486295752,
+    "state": "normal",
+    "total": 1099511627776,
+    "used": 405191
+  }
+}

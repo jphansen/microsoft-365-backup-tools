@@ -1,0 +1,38 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2025-12-03T08:35:24Z",
+  "description": "",
+  "id": "b!85iF7Hv4j0-AGG0GffRmx6Vxcv71IbZEuDkXqKSRUmLbvCiJOlixSZenHiXDhGwr",
+  "lastModifiedDateTime": "2026-02-05T11:10:52Z",
+  "name": "Crisis Management Reports",
+  "webUrl": "https://honnimar.sharepoint.com/sites/HonniMarData/Crisis%20Management%20Reports",
+  "driveType": "documentLibrary",
+  "createdBy": {
+    "user": {
+      "email": "mcc@honnicloud.com",
+      "id": "82689372-060e-411a-b774-4124039c85f7",
+      "displayName": "Malene Clausen"
+    }
+  },
+  "lastModifiedBy": {
+    "user": {
+      "email": "mcc@honnicloud.com",
+      "id": "82689372-060e-411a-b774-4124039c85f7",
+      "displayName": "Malene Clausen"
+    }
+  },
+  "owner": {
+    "user": {
+      "email": "mcc@honnicloud.com",
+      "id": "82689372-060e-411a-b774-4124039c85f7",
+      "displayName": "Malene Clausen"
+    }
+  },
+  "quota": {
+    "deleted": 0,
+    "remaining": 27487788034429,
+    "state": "normal",
+    "total": 27487790694400,
+    "used": 2659971
+  }
+}

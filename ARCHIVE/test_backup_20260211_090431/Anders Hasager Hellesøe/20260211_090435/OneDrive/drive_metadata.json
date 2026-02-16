@@ -1,0 +1,36 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2025-09-08T23:40:37Z",
+  "description": "",
+  "id": "b!Zc-NEIjvJEOUk36C8Wn1VuyHnQduFN9LvgNVEg87K75v-N-rTTJjQJUeWfxzNAkg",
+  "lastModifiedDateTime": "2026-02-10T06:48:51Z",
+  "name": "OneDrive",
+  "webUrl": "https://honnimar-my.sharepoint.com/personal/ahh_honnimar_com/Documents",
+  "driveType": "business",
+  "createdBy": {
+    "user": {
+      "displayName": "System Account"
+    }
+  },
+  "lastModifiedBy": {
+    "user": {
+      "email": "ahh@honnimar.com",
+      "id": "e78b1faa-8d13-4859-b928-3c094c32ebcc",
+      "displayName": "Anders Hasager Helles\u00f8e"
+    }
+  },
+  "owner": {
+    "user": {
+      "email": "ahh@honnimar.com",
+      "id": "e78b1faa-8d13-4859-b928-3c094c32ebcc",
+      "displayName": "Anders Hasager Helles\u00f8e"
+    }
+  },
+  "quota": {
+    "deleted": 0,
+    "remaining": 1087951086148,
+    "state": "normal",
+    "total": 1099511627776,
+    "used": 11560541628
+  }
+}

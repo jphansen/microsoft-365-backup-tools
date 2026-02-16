@@ -5,14 +5,12 @@ Backup tools for Microsoft 365 services including Dataverse (Power Platform), Sh
 ## Features
 
 - **Dataverse Backup**: Full backup of Dataverse databases including all tables, records, and metadata
-- **SharePoint Backup**: Backup SharePoint sites, lists, and documents
-- **Exchange/Outlook Backup**: Backup emails, attachments, and mailbox data from Exchange Online
-- **Incremental Backups**: Track changes and backup only modified data using checksum-based deduplication
-- **Multiple Authentication Methods**: User authentication and app registration for all services
-- **Graph API Support**: Modern backup using Microsoft Graph API for SharePoint and Exchange
+- **SharePoint Incremental Backup**: Backup SharePoint sites with checksum-based deduplication (only changed files)
+- **Exchange/Outlook Incremental Backup**: Backup emails with automatic mailbox discovery and incremental backup
+- **Checksum Databases**: Track changes and backup only modified data using SQLite databases
+- **Microsoft Graph API**: Modern backup using Microsoft Graph API for SharePoint and Exchange
 - **Multiple Output Formats**: EML, JSON, or both for email backups
-- **Compression**: Optional compression to save storage space
-- **Logging**: Comprehensive logging for monitoring and troubleshooting
+- **Comprehensive Logging**: Detailed logging for monitoring and troubleshooting
 
 ## Installation with UV
 
@@ -67,16 +65,30 @@ uv sync
    BACKUP_DIR=backup
    ```
 
-### SharePoint Backup
+### SharePoint Incremental Backup
 
-1. **Create `.env.sharepoint` file**:
+1. **Create Azure AD App Registration for SharePoint**:
+   - Go to Azure Portal → Azure Active Directory → App registrations
+   - Create a new app registration or use existing
+   - Add Microsoft Graph API permissions:
+     - **Sites.Read.All** (Application) - Required for reading SharePoint sites
+     - **User.Read.All** (Application) - Required for user enumeration
+   - Grant admin consent for all permissions
+   - Create a client secret
+
+2. **Create `.env.sharepoint` file**:
    ```bash
    cp .env.sharepoint.example .env.sharepoint
    ```
    
-   Edit `.env.sharepoint` with your credentials.
+   Edit `.env.sharepoint` with your credentials:
+   ```
+   SHAREPOINT_CLIENT_ID=your-client-id
+   SHAREPOINT_CLIENT_SECRET=your-client-secret
+   BACKUP_DIR=backup
+   ```
 
-### Exchange/Outlook Backup
+### Exchange/Outlook Incremental Backup
 
 1. **Update Azure AD App Registration**:
    - Go to your existing app registration (or create a new one)
@@ -103,7 +115,7 @@ uv sync
    EXCHANGE_BACKUP_DIR=backup/exchange
    EXCHANGE_USER_EMAIL=user@yourdomain.com  # Optional: Specific user to backup
    EXCHANGE_INCLUDE_ATTACHMENTS=true
-   EXCHANGE_MAX_EMAILS_PER_BACKUP=1000
+   EXCHANGE_MAX_EMAILS_PER_BACKUP=0  # 0 means unlimited
    EXCHANGE_BACKUP_FORMAT=both  # eml, json, or both
    ```
 
@@ -112,22 +124,12 @@ uv sync
 ### Dataverse Backup
 
 ```bash
-# Test environment variables
-uv run --env-file .env.dataverse test_env.py
-
-# Run full backup
+# Run full Dataverse backup
 uv run --env-file .env.dataverse dataverse_backup.py
 ```
 
-### SharePoint Backup
+### SharePoint Incremental Backup
 
-#### Basic Backup
-```bash
-# Run basic SharePoint backup
-uv run --env-file .env.sharepoint sharepoint_backup.py
-```
-
-#### Incremental Backup with Checksum Deduplication
 ```bash
 # First time: Run full backup to populate checksum database
 uv run --env-file .env.sharepoint sharepoint_incremental_backup.py --type full
@@ -137,90 +139,79 @@ uv run --env-file .env.sharepoint sharepoint_incremental_backup.py
 
 # View backup statistics
 uv run --env-file .env.sharepoint sharepoint_incremental_backup.py --stats
+
+# Cleanup old records (keep last 90 days)
+uv run --env-file .env.sharepoint sharepoint_incremental_backup.py --cleanup 90
 ```
 
-#### Graph API Backup (Modern)
-```bash
-# Backup using Microsoft Graph API
-uv run --env-file .env.sharepoint sharepoint_graph_backup.py
-```
-
-#### User Authentication Backup
-```bash
-# Backup using user authentication
-uv run --env-file .env.sharepoint sharepoint_backup_user_auth.py
-```
-
-### Exchange/Outlook Backup
-
-#### Test Authentication
-```bash
-# Test Azure AD authentication and Graph API access
-uv run --env-file .env.exchange python test_exchange_auth.py
-
-# Run comprehensive functional tests
-uv run --env-file .env.exchange python test_exchange_backup.py
-```
-
-#### Run Backup
-```bash
-# Run full Exchange/Outlook backup
-uv run --env-file .env.exchange python exchange_backup.py
-
-# Backup specific user only
-EXCHANGE_USER_EMAIL=user@yourdomain.com uv run --env-file .env.exchange python exchange_backup.py
-
-# Backup with limits (useful for testing)
-EXCHANGE_MAX_EMAILS_PER_BACKUP=100 uv run --env-file .env.exchange python exchange_backup.py
-
-# Skip attachments for faster backup
-EXCHANGE_INCLUDE_ATTACHMENTS=false uv run --env-file .env.exchange python exchange_backup.py
-```
-
-#### Backup Options
-- **Backup Format**: Choose between EML (standard email format), JSON (structured data), or both
-- **Folder Structure**: Preserve mailbox folder hierarchy or flatten all emails
-- **Incremental Backup**: Only backup new or changed emails using checksum tracking
-- **Filtering**: Filter by date, sender, subject, or read status
-- **Attachment Handling**: Include or exclude attachments, with size limits
-
-### Demo Script
-
-A demonstration script is available to verify the UV setup:
+### Exchange/Outlook Incremental Backup
 
 ```bash
-python demo_uv_project.py
+# Run incremental Exchange/Outlook backup
+uv run --env-file .env.exchange exchange_incremental_backup.py
+
+# Run full backup (first time)
+uv run --env-file .env.exchange exchange_incremental_backup.py --type full
+
+# View backup statistics
+uv run --env-file .env.exchange exchange_incremental_backup.py --stats
+
+# Cleanup old records (keep last 90 days)
+uv run --env-file .env.exchange exchange_incremental_backup.py --cleanup 90
+
+# Backup with specific options
+uv run --env-file .env.exchange exchange_incremental_backup.py \
+  --backup-dir backup/exchange \
+  --max-emails 1000 \
+  --no-attachments \
+  --format json
 ```
 
 ## Project Structure
 
 ```
 .
-├── dataverse_backup.py          # Main Dataverse backup script
-├── sharepoint_backup.py         # Main SharePoint backup script
-├── test_env.py                  # Environment variable test script
-├── pyproject.toml              # Project configuration (UV)
-├── requirements.txt            # Legacy requirements file
-├── dataverse_requirements.txt  # Dataverse-specific requirements
-├── .env.dataverse.example      # Dataverse environment template
-├── .env.sharepoint.example     # SharePoint environment template
-├── README.md                   # This file
-└── backup/                     # Backup output directory
-    └── dataverse_backup_YYYYMMDD_HHMMSS/
-        ├── tables_metadata.json
-        ├── backup_summary.json
-        └── tables/
-            ├── account.json
-            ├── contact.json
-            └── ...
+├── ARCHIVE/                          # Archived scripts and documentation
+├── backup/                           # Backup output directory
+├── checksum_db.py                    # SharePoint checksum database
+├── dataverse_backup.py               # Dataverse backup script
+├── dataverse_requirements.txt        # Dataverse-specific requirements
+├── exchange_backup.py                # Exchange backup core module
+├── exchange_checksum_db.py           # Exchange checksum database
+├── exchange_incremental_backup.py    # Exchange incremental backup script
+├── sharepoint_incremental_backup.py  # SharePoint incremental backup script
+├── .env.dataverse.example            # Dataverse environment template
+├── .env.example                      # General environment template
+├── .env.exchange                     # Exchange environment configuration
+├── .env.exchange.example             # Exchange environment template
+├── .env.sharepoint                   # SharePoint environment configuration
+├── .env.sharepoint.example           # SharePoint environment template
+├── .gitignore                        # Git ignore file
+├── pyproject.toml                    # Project configuration (UV)
+├── README.md                         # This file
+├── requirements.txt                  # Python requirements
+├── backup_checksums.db               # SharePoint checksum database file
+├── backup_checksums_exchange.db      # Exchange checksum database file
+└── uv.lock                           # UV lock file
 ```
 
 ## Backup Output
 
-Each backup creates a timestamped directory with:
+### Dataverse Backup
+Creates a timestamped directory with:
 - `tables_metadata.json`: Metadata for all tables
 - `backup_summary.json`: Summary of backup with record counts
 - `tables/`: Individual JSON files for each table
+
+### SharePoint Incremental Backup
+Creates organized directory structure:
+- `backup/[Site Name]/[Timestamp]/`: Site backup with metadata
+- `backup_checksums.db`: SQLite database tracking file checksums
+
+### Exchange/Outlook Incremental Backup
+Creates organized directory structure:
+- `backup/exchange/[User]/[Folder]/`: Email backups with attachments
+- `backup_checksums_exchange.db`: SQLite database tracking email checksums
 
 ## Scheduling Backups
 
@@ -230,14 +221,18 @@ Each backup creates a timestamped directory with:
 # Edit crontab
 crontab -e
 
-# Add line to run backup daily at 2 AM
-0 2 * * * cd /path/to/microsoft-365-backup-tools && uv run --env-file .env.dataverse dataverse_backup.py
+# Add lines to run incremental backups daily at 2 AM
+0 2 * * * cd /path/to/microsoft-365-backup-tools && uv run --env-file .env.sharepoint sharepoint_incremental_backup.py
+0 3 * * * cd /path/to/microsoft-365-backup-tools && uv run --env-file .env.exchange exchange_incremental_backup.py
+0 4 * * 0 cd /path/to/microsoft-365-backup-tools && uv run --env-file .env.dataverse dataverse_backup.py
 ```
 
 ### Windows (Task Scheduler)
 
-Create a scheduled task to run:
+Create scheduled tasks to run:
 ```
+cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run --env-file .env.sharepoint sharepoint_incremental_backup.py"
+cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run --env-file .env.exchange exchange_incremental_backup.py"
 cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run --env-file .env.dataverse dataverse_backup.py"
 ```
 
@@ -247,59 +242,34 @@ cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run --env-file .env.datav
 
 1. **Authentication Errors**:
    - Verify Azure AD app has correct permissions
-   - Check application user has security roles in Dataverse
-   - Ensure client secret hasn't expired
+   - Check client secret hasn't expired
+   - Ensure admin consent has been granted for all permissions
 
 2. **Permission Errors**:
-   - Application user needs appropriate security roles
-   - For SharePoint, ensure app has correct Graph API permissions
+   - Application needs appropriate API permissions
+   - For SharePoint: Sites.Read.All and User.Read.All
+   - For Exchange: Mail.Read and User.Read.All
+   - For Dataverse: Dataverse/user_impersonation
 
 3. **Environment Variables Not Loading**:
-   - Verify `.env.dataverse` file exists and has correct values
-   - Test with `uv run --env-file .env.dataverse test_env.py`
+   - Verify `.env.*` files exist and have correct values
+   - Check file permissions and encoding
 
 ### Logs
 
-Check `dataverse_backup.log` for detailed logs:
-```bash
-tail -f dataverse_backup.log
-```
+Check log files for detailed information:
+- `sharepoint_incremental_backup.log` - SharePoint backup logs
+- `exchange_incremental_backup.log` - Exchange backup logs  
+- `dataverse_backup.log` - Dataverse backup logs
 
-## Additional Documentation
+## Archived Files
 
-### SharePoint Backup Documentation
-- **[INCREMENTAL_BACKUP_README.md](INCREMENTAL_BACKUP_README.md)**: Complete guide to incremental backup with checksum deduplication
-- **[SHAREPOINT_APP_REGISTRATION_GUIDE.md](SHAREPOINT_APP_REGISTRATION_GUIDE.md)**: Step-by-step guide for Azure AD app registration (updated with Exchange permissions)
-- **[modern_sharepoint_solution.md](modern_sharepoint_solution.md)**: Modern SharePoint backup solution using Graph API
-- **[tenant_wide_backup_solution.md](tenant_wide_backup_solution.md)**: Tenant-wide backup solution architecture
-
-### Exchange/Outlook Backup Documentation
-- **[EXCHANGE_APP_REGISTRATION_GUIDE.md](EXCHANGE_APP_REGISTRATION_GUIDE.md)**: Complete guide for Exchange/Outlook backup app registration and security setup
-- **[EXCHANGE_BACKUP_IMPLEMENTATION_PLAN.md](EXCHANGE_BACKUP_IMPLEMENTATION_PLAN.md)**: Implementation plan and architecture for Exchange backup
-
-### Test Scripts
-The project includes comprehensive test scripts for various components:
-- `test_graph_backup.py`: Test Microsoft Graph API backup functionality
-- `test_incremental_backup.py`: Test incremental backup logic and checksum database
-- `test_sharepoint_auth.py`: Test SharePoint authentication methods
-- `test_site_access.py`: Test site access permissions
-- `test_tenant_access.py`: Test tenant-wide access
-- `test_user_auth.py`: Test user authentication backup
-- `test_exchange_auth.py`: Test Exchange/Outlook authentication and Graph API access
-- `test_exchange_backup.py`: Comprehensive functional tests for Exchange backup
-
-### Utility Scripts
-- `check_app_permissions.py`: Check application permissions in Azure AD
-- `checksum_db.py`: SQLite database for checksum tracking
-- `decode_permissions.py`: Decode and analyze permission scopes
-- `diagnose_sharepoint_access.py`: Diagnose SharePoint access issues
-- `get_service_principal.py`: Get service principal information
-- `grant_access_final.ps1`: PowerShell script to grant SharePoint access
-- `grant_sharepoint_access.ps1`: PowerShell script for SharePoint permissions
-
-### Exchange Backup Scripts
-- `exchange_backup.py`: Main Exchange/Outlook backup script using Microsoft Graph API
-- `.env.exchange.example`: Environment template for Exchange backup configuration
+Unused scripts, test files, and documentation have been moved to the `ARCHIVE/` directory for reference. These include:
+- Legacy backup scripts
+- Test scripts
+- Detailed documentation guides
+- PowerShell scripts
+- Example shell scripts
 
 ## License
 

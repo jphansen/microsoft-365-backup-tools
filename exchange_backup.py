@@ -20,6 +20,10 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional, Dict, Any, List, Tuple
 from email.message import EmailMessage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 from email.header import decode_header
 import base64
 import mimetypes
@@ -65,7 +69,8 @@ class ExchangeBackup:
         self.backup_dir = Path(config.get('EXCHANGE_BACKUP_DIR', 'backup/exchange'))
         self.user_email = config.get('EXCHANGE_USER_EMAIL')
         self.include_attachments = config.get('EXCHANGE_INCLUDE_ATTACHMENTS', True)
-        self.max_emails = config.get('EXCHANGE_MAX_EMAILS_PER_BACKUP', 1000)
+        # Backup tool should have NO LIMITS - 0 means unlimited
+        self.max_emails = config.get('EXCHANGE_MAX_EMAILS_PER_BACKUP', 0)
         self.preserve_folders = config.get('EXCHANGE_PRESERVE_FOLDER_STRUCTURE', True)
         self.backup_format = config.get('EXCHANGE_BACKUP_FORMAT', 'both')
         self.compress_backups = config.get('EXCHANGE_COMPRESS_BACKUPS', False)
@@ -92,7 +97,9 @@ class ExchangeBackup:
         
         # Advanced settings
         self.request_timeout = config.get('EXCHANGE_REQUEST_TIMEOUT', 30)
-        self.max_attachment_size = config.get('EXCHANGE_MAX_ATTACHMENT_SIZE', 4) * 1024 * 1024  # Convert to bytes
+        # Remove attachment size limit to backup ALL attachments regardless of size
+        # This ensures ALL attachments are backed up as requested
+        self.max_attachment_size = None  # No size limit
         
         # Internal state
         self.access_token = None
@@ -327,12 +334,11 @@ class ExchangeBackup:
             response = self._make_graph_request(endpoint, params=params)
             messages.extend(response.get('value', []))
             
-            # Check if we need to fetch more (pagination)
-            if len(messages) < self.max_emails and '@odata.nextLink' in response:
+            # Check if we need to fetch more (pagination) - NO LIMIT for backup tool
+            if '@odata.nextLink' in response:
                 next_skip = skip + self.batch_size
-                if next_skip < self.max_emails:
-                    more_messages = self._get_folder_messages(user_id, folder_id, next_skip)
-                    messages.extend(more_messages)
+                more_messages = self._get_folder_messages(user_id, folder_id, next_skip)
+                messages.extend(more_messages)
             
         except Exception as e:
             logger.error(f"Failed to fetch messages from folder {folder_id}: {str(e)}")
@@ -343,7 +349,7 @@ class ExchangeBackup:
             if self._apply_message_filters(message):
                 filtered_messages.append(message)
         
-        return filtered_messages[:self.max_emails]
+        return filtered_messages  # NO LIMIT - return ALL messages
     
     def _apply_message_filters(self, message: Dict[str, Any]) -> bool:
         """Apply additional filters to messages."""
@@ -447,33 +453,45 @@ class ExchangeBackup:
         # cache user lookups or handle this differently
         return user_id
     
+    def _get_user_display_name(self, user_id: str) -> str:
+        """Get user display name for logging purposes."""
+        # Simple implementation - in a real system you might want to cache this
+        # or get it from the user object passed to _backup_user_messages
+        # For now, we'll extract from user_id or return a generic name
+        if hasattr(self, '_user_cache') and user_id in self._user_cache:
+            return self._user_cache[user_id].get('displayName', user_id)
+        
+        # Try to extract from email pattern
+        if '@' in user_id:
+            # Extract name from email (e.g., "jens.peter@example.com" -> "Jens Peter")
+            name_part = user_id.split('@')[0]
+            name_part = name_part.replace('.', ' ').replace('_', ' ').title()
+            return name_part
+        
+        return user_id
+    
     def _create_eml_file(self, message: Dict[str, Any], attachments: List[Dict[str, Any]], 
                         attachment_data: Dict[str, bytes], file_path: Path):
         """Create EML file from message data."""
-        eml = EmailMessage()
+        # ALWAYS use MIMEMultipart - it's the most robust and can handle all cases
+        # This ensures we never get "set_content not valid on multipart" errors
+        eml = MIMEMultipart()
         
-        # Headers
-        eml['Subject'] = message.get('subject', '')
-        eml['From'] = self._format_email_address(message.get('from', {}))
-        eml['To'] = self._format_email_addresses(message.get('toRecipients', []))
-        eml['Cc'] = self._format_email_addresses(message.get('ccRecipients', []))
-        eml['Bcc'] = self._format_email_addresses(message.get('bccRecipients', []))
-        eml['Date'] = message.get('receivedDateTime', '')
+        # Set headers
+        self._set_email_headers(eml, message)
         
-        # Additional headers
-        for header in message.get('internetMessageHeaders', []):
-            eml[header.get('name', '')] = header.get('value', '')
-        
-        # Body
+        # Body content
         body_content = message.get('body', {}).get('content', '')
         body_type = message.get('body', {}).get('contentType', 'text')
         
+        # Always add body as a MIMEText part
         if body_type == 'html':
-            eml.set_content(body_content, subtype='html')
+            body_part = MIMEText(body_content, 'html', 'utf-8')
         else:
-            eml.set_content(body_content)
+            body_part = MIMEText(body_content, 'plain', 'utf-8')
+        eml.attach(body_part)
         
-        # Attachments
+        # Add attachments if any
         for attachment in attachments:
             attachment_id = attachment.get('id')
             if attachment_id in attachment_data:
@@ -481,16 +499,47 @@ class ExchangeBackup:
                 filename = attachment.get('name', f'attachment_{attachment_id}')
                 content_type = attachment.get('contentType', 'application/octet-stream')
                 
-                eml.add_attachment(
-                    content,
-                    maintype=content_type.split('/')[0],
-                    subtype=content_type.split('/')[1] if '/' in content_type else '',
-                    filename=filename
-                )
+                # Create attachment part
+                maintype, subtype = content_type.split('/', 1) if '/' in content_type else (content_type, '')
+                if not subtype:
+                    subtype = 'octet-stream'
+                
+                attachment_part = MIMEBase(maintype, subtype)
+                attachment_part.set_payload(content)
+                attachment_part.add_header('Content-Disposition', 'attachment', filename=filename)
+                
+                # Encode the attachment
+                encoders.encode_base64(attachment_part)
+                
+                eml.attach(attachment_part)
         
         # Write EML file
         with open(file_path, 'wb') as f:
             f.write(eml.as_bytes())
+    
+    def _set_email_headers(self, eml, message: Dict[str, Any]):
+        """Set email headers, handling duplicates from internetMessageHeaders."""
+        # Basic headers
+        eml['Subject'] = message.get('subject', '')
+        eml['From'] = self._format_email_address(message.get('from', {}))
+        eml['To'] = self._format_email_addresses(message.get('toRecipients', []))
+        eml['Cc'] = self._format_email_addresses(message.get('ccRecipients', []))
+        eml['Bcc'] = self._format_email_addresses(message.get('bccRecipients', []))
+        eml['Date'] = message.get('receivedDateTime', '')
+        
+        # Additional headers - skip headers we've already set explicitly
+        # Some emails have duplicate headers in internetMessageHeaders which violates RFC 5322
+        # Use case-insensitive comparison since header names are case-insensitive in emails
+        headers_to_skip = {'subject', 'from', 'to', 'cc', 'bcc', 'date'}
+        for header in message.get('internetMessageHeaders', []):
+            header_name = header.get('name', '')
+            if header_name and header_name.lower() not in headers_to_skip:
+                try:
+                    eml[header_name] = header.get('value', '')
+                except ValueError as e:
+                    # Some headers might have other validation issues
+                    # Log warning but continue with backup
+                    logger.warning(f"Could not add header '{header_name}' to message {message.get('id', 'unknown')}: {str(e)}")
     
     def _format_email_address(self, address_dict: Dict[str, Any]) -> str:
         """Format email address from Graph API response."""
@@ -597,26 +646,21 @@ class ExchangeBackup:
             messages = self._get_folder_messages(user_id, folder_id)
             logger.info(f"Found {len(messages)} messages in folder {folder_name}")
             
-            # Process each message
+            # Process each message - NO LIMITS for backup tool
             for message in messages:
                 self.backup_stats['total_emails'] += 1
                 
                 try:
-                    self._backup_single_message(user_id, message, folder_path)
+                    self._backup_single_message(user_id, user_email, message, folder_path)
                     self.backup_stats['backed_up_emails'] += 1
                     
                 except Exception as e:
                     logger.error(f"Failed to backup message {message.get('id')}: {str(e)}")
                     self.backup_stats['errors'] += 1
-                
-                # Check if we've reached the limit
-                if self.backup_stats['backed_up_emails'] >= self.max_emails:
-                    logger.warning(f"Reached maximum email limit ({self.max_emails})")
-                    return
         
         self.backup_stats['users_processed'] += 1
     
-    def _backup_single_message(self, user_id: str, message: Dict[str, Any], folder_path: Path):
+    def _backup_single_message(self, user_id: str, user_email: str, message: Dict[str, Any], folder_path: Path):
         """Backup a single email message."""
         message_id = message.get('id')
         subject = message.get('subject', 'No Subject')
@@ -633,6 +677,11 @@ class ExchangeBackup:
         safe_subject = re.sub(r'[<>:"/\\|?*]', '_', subject)
         safe_subject = safe_subject[:100]  # Limit length
         
+        # Also sanitize message_id as it may contain characters invalid in filenames
+        # Message IDs from Exchange are typically base64 encoded and may contain =, /, +, etc.
+        safe_message_id = re.sub(r'[<>:"/\\|?*=+]', '_', message_id)
+        safe_message_id = safe_message_id[:50]  # Limit length
+        
         # Get attachments if needed
         attachments = []
         attachment_data = {}
@@ -645,33 +694,32 @@ class ExchangeBackup:
                 attachment_name = attachment.get('name', f'attachment_{attachment_id}')
                 attachment_size = attachment.get('size', 0)
                 
-                # Check size limit
-                if attachment_size > self.max_attachment_size:
-                    logger.warning(f"Skipping large attachment: {attachment_name} ({attachment_size} bytes)")
-                    self.backup_stats['attachments_skipped'] += 1
-                    continue
-                
-                # Download attachment
+                # Download attachment (no size limit - backup ALL attachments)
                 content = self._download_attachment(user_id, attachment_id, message_id)
                 if content:
                     attachment_data[attachment_id] = content
                     self.backup_stats['attachments_downloaded'] += 1
+                    logger.debug(f"Downloaded attachment: {attachment_name} ({attachment_size} bytes)")
+                else:
+                    logger.warning(f"Failed to download attachment: {attachment_name}")
         
         # Create backup files based on format
-        base_filename = folder_path / f"{safe_subject}_{message_id}"
+        # IMPORTANT: Don't use with_suffix() as it removes the message_id if it contains dots
+        # Instead, manually append the file extension
+        base_filename_str = f"{safe_subject}_{safe_message_id}"
         
         if self.backup_format in ['eml', 'both']:
-            eml_file = base_filename.with_suffix('.eml')
+            eml_file = folder_path / f"{base_filename_str}.eml"
             self._create_eml_file(message, attachments, attachment_data, eml_file)
             logger.debug(f"Created EML file: {eml_file.name}")
         
         if self.backup_format in ['json', 'both']:
-            json_file = base_filename.with_suffix('.json')
+            json_file = folder_path / f"{base_filename_str}.json"
             self._create_json_file(message, attachments, attachment_data, json_file)
             logger.debug(f"Created JSON file: {json_file.name}")
         
-        # Save checksum for incremental backup
-        user_email = self._get_user_email_from_id(user_id)
+        # For backward compatibility, keep base_filename as Path object for checksum database
+        base_filename = folder_path / base_filename_str
         
         # Calculate total message size
         message_size = len(json.dumps(message, default=str).encode('utf-8'))
@@ -711,7 +759,14 @@ class ExchangeBackup:
                         checksum=attachment_checksum
                     )
         
-        logger.info(f"Backed up: {subject}")
+        # Log with username/email address instead of UUID
+        # Extract display name from email (e.g., "jens.peter@example.com" -> "Jens Peter")
+        if '@' in user_email:
+            name_part = user_email.split('@')[0]
+            name_part = name_part.replace('.', ' ').replace('_', ' ').title()
+            logger.info(f"({name_part}): {subject}")
+        else:
+            logger.info(f"({user_email}): {subject}")
     
     def backup_all(self):
         """Backup emails for all configured users."""
@@ -786,7 +841,8 @@ def load_config() -> Dict[str, Any]:
     config['EXCHANGE_BACKUP_DIR'] = os.environ.get('EXCHANGE_BACKUP_DIR', 'backup/exchange')
     config['EXCHANGE_USER_EMAIL'] = os.environ.get('EXCHANGE_USER_EMAIL')
     config['EXCHANGE_INCLUDE_ATTACHMENTS'] = os.environ.get('EXCHANGE_INCLUDE_ATTACHMENTS', 'true').lower() == 'true'
-    config['EXCHANGE_MAX_EMAILS_PER_BACKUP'] = int(os.environ.get('EXCHANGE_MAX_EMAILS_PER_BACKUP', '1000'))
+    # Backup tool should have NO LIMITS - set to 0 for unlimited
+    config['EXCHANGE_MAX_EMAILS_PER_BACKUP'] = int(os.environ.get('EXCHANGE_MAX_EMAILS_PER_BACKUP', '0'))
     config['EXCHANGE_PRESERVE_FOLDER_STRUCTURE'] = os.environ.get('EXCHANGE_PRESERVE_FOLDER_STRUCTURE', 'true').lower() == 'true'
     config['EXCHANGE_BACKUP_FORMAT'] = os.environ.get('EXCHANGE_BACKUP_FORMAT', 'both')
     config['EXCHANGE_COMPRESS_BACKUPS'] = os.environ.get('EXCHANGE_COMPRESS_BACKUPS', 'false').lower() == 'true'
@@ -814,7 +870,7 @@ def load_config() -> Dict[str, Any]:
     
     # Advanced settings
     config['EXCHANGE_REQUEST_TIMEOUT'] = int(os.environ.get('EXCHANGE_REQUEST_TIMEOUT', '30'))
-    config['EXCHANGE_MAX_ATTACHMENT_SIZE'] = int(os.environ.get('EXCHANGE_MAX_ATTACHMENT_SIZE', '4'))
+    # EXCHANGE_MAX_ATTACHMENT_SIZE is no longer used - all attachments are backed up regardless of size
     
     return config
 
@@ -850,11 +906,11 @@ def validate_config(config: Dict[str, Any]) -> bool:
     
     # Validate numeric values
     try:
-        max_emails = config.get('EXCHANGE_MAX_EMAILS_PER_BACKUP', 1000)
+        max_emails = config.get('EXCHANGE_MAX_EMAILS_PER_BACKUP', 0)
         if max_emails < 0:
-            errors.append("EXCHANGE_MAX_EMAILS_PER_BACKUP must be positive")
+            errors.append("EXCHANGE_MAX_EMAILS_PER_BACKUP must be 0 (unlimited) or positive")
     except ValueError:
-        errors.append("EXCHANGE_MAX_EMAILS_PER_BACKUP must be a valid integer")
+        errors.append("EXCHANGE_MAX_EMAILS_PER_BACKUP must be a valid integer (0 for unlimited)")
     
     # Log errors
     if errors:

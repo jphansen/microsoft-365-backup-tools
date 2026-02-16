@@ -1,0 +1,36 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2025-01-12T00:35:50Z",
+  "description": "",
+  "id": "b!yPmMwajsNkKqN8y-tNMfJgogogjRohxFvGsmQ2MK8z0OKvnchl6VSLpj4uzas8Ui",
+  "lastModifiedDateTime": "2026-02-07T13:51:16Z",
+  "name": "OneDrive",
+  "webUrl": "https://honnimar-my.sharepoint.com/personal/malou_honnimar_com/Documents",
+  "driveType": "business",
+  "createdBy": {
+    "user": {
+      "displayName": "System Account"
+    }
+  },
+  "lastModifiedBy": {
+    "user": {
+      "email": "malou@honnimar.com",
+      "id": "a3df000a-0e9b-4c91-82b4-2b0f91e85cd1",
+      "displayName": "Malou Clausen"
+    }
+  },
+  "owner": {
+    "user": {
+      "email": "malou@honnimar.com",
+      "id": "a3df000a-0e9b-4c91-82b4-2b0f91e85cd1",
+      "displayName": "Malou Clausen"
+    }
+  },
+  "quota": {
+    "deleted": 2754506,
+    "remaining": 1099489537930,
+    "state": "normal",
+    "total": 1099511627776,
+    "used": 19335340
+  }
+}

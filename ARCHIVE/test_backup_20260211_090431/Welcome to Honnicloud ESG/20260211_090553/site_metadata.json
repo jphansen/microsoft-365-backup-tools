@@ -1,0 +1,8 @@
+{
+  "site_id": "honnimar.sharepoint.com,07dcbe56-966f-4b4c-8832-23d94fb31def,7c2d0c2f-0078-4202-a0de-ea97d3ebfce2",
+  "site_name": "Welcome to Honnicloud ESG",
+  "site_url": "https://honnimar.sharepoint.com/sites/DemoESG",
+  "backup_date": "2026-02-11T09:05:53.684044",
+  "backup_type": "incremental",
+  "backup_method": "Microsoft Graph API (Incremental)"
+}

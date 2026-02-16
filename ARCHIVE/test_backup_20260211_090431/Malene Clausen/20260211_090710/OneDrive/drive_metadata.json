@@ -1,0 +1,36 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2024-08-17T23:27:33Z",
+  "description": "",
+  "id": "b!_3K7Ba3qhk22braBlfuswSlngs8hejhEm6F-ln9qY1NMgyyNivTHTocv5V4gnfqP",
+  "lastModifiedDateTime": "2026-01-29T06:47:02Z",
+  "name": "OneDrive",
+  "webUrl": "https://honnimar-my.sharepoint.com/personal/mcc_honnicloud_com/Documents",
+  "driveType": "business",
+  "createdBy": {
+    "user": {
+      "displayName": "System Account"
+    }
+  },
+  "lastModifiedBy": {
+    "user": {
+      "email": "mcc@honnicloud.com",
+      "id": "82689372-060e-411a-b774-4124039c85f7",
+      "displayName": "Malene Clausen"
+    }
+  },
+  "owner": {
+    "user": {
+      "email": "mcc@honnicloud.com",
+      "id": "82689372-060e-411a-b774-4124039c85f7",
+      "displayName": "Malene Clausen"
+    }
+  },
+  "quota": {
+    "deleted": 115359264,
+    "remaining": 1081794178170,
+    "state": "normal",
+    "total": 1099511627776,
+    "used": 17602090342
+  }
+}

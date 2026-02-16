@@ -1,0 +1,36 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2025-07-01T23:29:42Z",
+  "description": "",
+  "id": "b!G6-c3zdPqkScZpN6hiEakqjVZOScXTNOpx8Gem7pGWsdAX89AzArRowvVnlpxR3f",
+  "lastModifiedDateTime": "2025-11-27T23:31:55Z",
+  "name": "Documents",
+  "webUrl": "https://honnimar.sharepoint.com/sites/StatusSundbusserne/Shared%20Documents",
+  "driveType": "documentLibrary",
+  "createdBy": {
+    "user": {
+      "displayName": "System Account"
+    }
+  },
+  "lastModifiedBy": {
+    "user": {
+      "email": "jph@honnimar.com",
+      "id": "7e695db7-b22c-4171-82ca-6ec0ab1e913c",
+      "displayName": "Jens Peter Hansen"
+    }
+  },
+  "owner": {
+    "group": {
+      "email": "StatusSundbusserne@Honnimar.onmicrosoft.com",
+      "id": "0d830f8a-ec71-4fc4-8946-f1c1e6089b6d",
+      "displayName": "StatusSundbusserne Owners"
+    }
+  },
+  "quota": {
+    "deleted": 0,
+    "remaining": 27487789181480,
+    "state": "normal",
+    "total": 27487790694400,
+    "used": 1512920
+  }
+}

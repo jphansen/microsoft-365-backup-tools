@@ -1,0 +1,29 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2024-10-19T23:54:16Z",
+  "description": "",
+  "id": "b!-NhuPZ1TCEac2AZULG8eiy8MLXx4AAJCoN7ql9Pr_OLg1XBHNJRHQK_V29MZdGFd",
+  "lastModifiedDateTime": "2024-10-23T12:14:45Z",
+  "name": "Documents",
+  "webUrl": "https://honnimar.sharepoint.com/sites/DemoQMS/Shared%20Documents",
+  "driveType": "documentLibrary",
+  "createdBy": {
+    "user": {
+      "displayName": "System Account"
+    }
+  },
+  "owner": {
+    "user": {
+      "email": "mcc@honnicloud.com",
+      "id": "82689372-060e-411a-b774-4124039c85f7",
+      "displayName": "Malene Clausen"
+    }
+  },
+  "quota": {
+    "deleted": 0,
+    "remaining": 27487774568981,
+    "state": "normal",
+    "total": 27487790694400,
+    "used": 16125419
+  }
+}

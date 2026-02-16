@@ -1,0 +1,8 @@
+{
+  "site_id": "honnimar.sharepoint.com,8882979b-6e72-4406-b07f-a09f9669b65f,7c2d0c2f-0078-4202-a0de-ea97d3ebfce2",
+  "site_name": "Welcome to Honnimar Crisis Management",
+  "site_url": "https://honnimar.sharepoint.com/sites/CrisisManagement",
+  "backup_date": "2026-02-11T09:05:52.381179",
+  "backup_type": "incremental",
+  "backup_method": "Microsoft Graph API (Incremental)"
+}

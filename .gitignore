@@ -1,6 +1,8 @@
 # Environment variables
 .env
 .env.dataverse
+.env.exchange
+.env.sharepoint
 
 # Backup directories
 backup/

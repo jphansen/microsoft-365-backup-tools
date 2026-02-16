@@ -1,0 +1,38 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2025-09-09T15:24:28Z",
+  "description": "",
+  "id": "b!_2Sv_unj4E-7F0-_Ivbz3OnAOjMSNuRGnJ02S9QzFYJ5w-RM_TKqSZee3X15G0l2",
+  "lastModifiedDateTime": "2025-12-17T06:59:13Z",
+  "name": "Risk Topic",
+  "webUrl": "https://honnimar.sharepoint.com/sites/HonnimarDocumentManagementSite/honni_risktopics",
+  "driveType": "documentLibrary",
+  "createdBy": {
+    "user": {
+      "email": "mcc@honnicloud.com",
+      "id": "82689372-060e-411a-b774-4124039c85f7",
+      "displayName": "Malene Clausen"
+    }
+  },
+  "lastModifiedBy": {
+    "user": {
+      "email": "mcc@honnicloud.com",
+      "id": "82689372-060e-411a-b774-4124039c85f7",
+      "displayName": "Malene Clausen"
+    }
+  },
+  "owner": {
+    "group": {
+      "email": "HonnimarDocumentManagementSite@Honnimar.onmicrosoft.com",
+      "id": "8fb7027b-2954-4edc-9e1a-ab7a5fc9ee4e",
+      "displayName": "HonnimarDocumentManagementSite Owners"
+    }
+  },
+  "quota": {
+    "deleted": 0,
+    "remaining": 27487789034892,
+    "state": "normal",
+    "total": 27487790694400,
+    "used": 1659508
+  }
+}

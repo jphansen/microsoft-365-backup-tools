@@ -1,0 +1,8 @@
+{
+  "site_id": "honnimar.sharepoint.com,17596f22-78d2-445d-b0f2-8cd22faade23,2a0ef39c-920e-420b-927c-5ecadecd19bf",
+  "site_name": "Development Team",
+  "site_url": "https://honnimar.sharepoint.com/sites/developmentteam",
+  "backup_date": "2026-02-11T09:04:34.261970",
+  "backup_type": "incremental",
+  "backup_method": "Microsoft Graph API (Incremental)"
+}

@@ -1,0 +1,35 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#drives/$entity",
+  "createdDateTime": "2024-11-21T13:54:55Z",
+  "description": "A catalog to store apps for SharePoint",
+  "id": "b!pPg3CBFwDEmmXPO18cnRewsFoF7_aGJCmw8vJHycRdafIqi_u2bpSYCRwxNq74Y8",
+  "lastModifiedDateTime": "2026-01-30T10:40:25Z",
+  "name": "Apps for SharePoint",
+  "webUrl": "https://honnimar.sharepoint.com/sites/appcatalog/AppCatalog",
+  "driveType": "documentLibrary",
+  "createdBy": {
+    "user": {
+      "displayName": "System Account"
+    }
+  },
+  "lastModifiedBy": {
+    "user": {
+      "email": "jph@honnimar.com",
+      "id": "7e695db7-b22c-4171-82ca-6ec0ab1e913c",
+      "displayName": "Jens Peter Hansen"
+    }
+  },
+  "owner": {
+    "group": {
+      "id": "38d8248f-a8d1-4fc1-afbe-fc8f42025aa2",
+      "displayName": "Global Administrator"
+    }
+  },
+  "quota": {
+    "deleted": 2860056,
+    "remaining": 27487771352670,
+    "state": "normal",
+    "total": 27487790694400,
+    "used": 16481674
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "site_id": "honnimar.sharepoint.com,0837f8a4-7011-490c-a65c-f3b5f1c9d17b,5ea0050b-68ff-4262-9b0f-2f247c9c45d6",
+  "site_name": "Apps",
+  "site_url": "https://honnimar.sharepoint.com/sites/appcatalog",
+  "backup_date": "2026-02-11T09:05:06.221911",
+  "backup_type": "incremental",
+  "backup_method": "Microsoft Graph API (Incremental)"
+}
