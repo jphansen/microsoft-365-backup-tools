@@ -201,8 +201,8 @@ def main():
     parser.add_argument('--db-path', default='backup_checksums_exchange.db',
                        help='Checksum database path (default: backup_checksums_exchange.db)')
     
-    parser.add_argument('--max-emails', type=int, default=1000,
-                       help='Maximum emails per user (default: 1000)')
+    parser.add_argument('--max-emails', type=int, default=0,
+                       help='Maximum emails per user (0 = unlimited, default: 0)')
     
     parser.add_argument('--no-attachments', action='store_true',
                        help='Skip attachment downloads')
@@ -250,7 +250,8 @@ def main():
             logger.info(f"Backup type: {args.type}")
             logger.info(f"Backup directory: {args.backup_dir}")
             logger.info(f"Database: {args.db_path}")
-            logger.info(f"Max emails per user: {args.max_emails}")
+            max_emails_display = "unlimited" if args.max_emails == 0 else f"{args.max_emails}"
+            logger.info(f"Max emails per user: {max_emails_display}")
             logger.info(f"Include attachments: {not args.no_attachments}")
             logger.info(f"Preserve folder structure: {not args.no_folders}")
             logger.info(f"Backup format: {args.format}")

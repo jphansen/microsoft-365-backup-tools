@@ -195,7 +195,7 @@ python exchange_incremental_backup.py --cleanup 90
 # Backup with specific options
 python exchange_incremental_backup.py \
   --backup-dir backup/exchange \
-  --max-emails 1000 \
+  --max-emails 1000 \  # Optional: Limit to 1000 emails per user (0 = unlimited)
   --no-attachments \
   --format json
 ```
