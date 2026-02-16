@@ -658,15 +658,16 @@ def main():
     # Configuration from environment variables
     CLIENT_ID = os.environ.get('SHAREPOINT_CLIENT_ID')
     CLIENT_SECRET = os.environ.get('SHAREPOINT_CLIENT_SECRET')
-    TENANT_ID = "163506f6-ef0e-42f8-a823-d13d7563bad9"  # Your tenant ID
+    TENANT_ID = os.environ.get('SHAREPOINT_TENANT_ID')
     BACKUP_DIR = os.environ.get('BACKUP_DIR', args.backup_dir)
     
     # Validate configuration
-    if not CLIENT_ID or not CLIENT_SECRET:
+    if not CLIENT_ID or not CLIENT_SECRET or not TENANT_ID:
         logger.error("Please configure SharePoint credentials!")
         logger.error("Set the following environment variables:")
         logger.error("  SHAREPOINT_CLIENT_ID - Azure AD App Client ID")
         logger.error("  SHAREPOINT_CLIENT_SECRET - Azure AD App Client Secret")
+        logger.error("  SHAREPOINT_TENANT_ID - Azure AD Tenant ID")
         logger.error("  BACKUP_DIR (optional) - Backup directory path")
         sys.exit(1)
     
