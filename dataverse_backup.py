@@ -12,23 +12,45 @@ Backs up an entire Microsoft Dataverse (Power Platform) database including:
 import os
 import sys
 import json
-import logging
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 import requests
 from msal import ConfidentialClientApplication
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('dataverse_backup.log'),
-        logging.StreamHandler(sys.stdout)
-    ]
+# Import loguru for enhanced logging
+from loguru import logger
+
+# Configure loguru with custom levels and formatting
+# Remove default handler
+logger.remove()
+
+# Add custom levels
+logger.level("TRACE", color="<cyan>", icon="🔍")
+logger.level("DEBUG", color="<blue>", icon="🐛")
+logger.level("INFO", color="<green>", icon="ℹ️")
+logger.level("SUCCESS", color="<bold><green>", icon="✅")
+logger.level("WARNING", color="<yellow>", icon="⚠️")
+logger.level("ERROR", color="<red>", icon="❌")
+logger.level("CRITICAL", color="<bold><red>", icon="💥")
+
+# Add console handler with custom format
+logger.add(
+    sys.stdout,
+    format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+    level="INFO",  # Default level
+    colorize=True
 )
-logger = logging.getLogger(__name__)
+
+# Add file handler for detailed logging
+logger.add(
+    "dataverse_backup.log",
+    format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}",
+    level="TRACE",  # Log everything to file
+    rotation="10 MB",  # Rotate when file reaches 10 MB
+    retention="30 days",  # Keep logs for 30 days
+    compression="zip"  # Compress rotated logs
+)
 
 
 class DataverseBackup:

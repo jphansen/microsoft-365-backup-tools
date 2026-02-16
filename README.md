@@ -295,6 +295,49 @@ cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run exchange_incremental_
 cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run dataverse_backup.py"
 ```
 
+## Enhanced Logging with Loguru
+
+All backup scripts now use the `loguru` library for enhanced logging with the following features:
+
+### Logging Levels
+
+The scripts use a custom hierarchy of logging levels for different types of messages:
+
+- **TRACE** (🔍): Most detailed level - logs every file being processed, API calls, etc.
+- **DEBUG** (🐛): Detailed debugging information - file checks, size comparisons, etc.
+- **INFO** (ℹ️): Regular information - backup started, sites found, etc.
+- **SUCCESS** (✅): Top-level success messages - authentication successful, backup completed
+- **WARNING** (⚠️): Warnings - permission issues, missing files, etc.
+- **ERROR** (❌): Errors - failed downloads, authentication errors, etc.
+- **CRITICAL** (💥): Critical errors - system failures, etc.
+
+### Log Output
+
+- **Console**: Colored output with icons for easy readability (INFO level and above by default)
+- **File**: Detailed logs to `*.log` files with TRACE level for complete debugging
+- **Log Rotation**: Automatic rotation when logs reach 10 MB
+- **Retention**: Logs kept for 30 days, compressed with zip
+
+### Controlling Log Verbosity
+
+By default, console output shows INFO level and above. To see more detailed logs:
+
+```bash
+# Run with environment variable to change log level
+LOGURU_LEVEL=TRACE python sharepoint_incremental_backup.py --help
+
+# Or modify the script to change the default level in logger.add()
+```
+
+### Example Log Output
+
+```
+2026-02-16 11:16:45 | INFO    | __main__:main:658 - Loaded environment variables from .env file
+2026-02-16 11:16:45 | SUCCESS | __main__:_get_access_token:101 - Graph API authentication successful
+2026-02-16 11:16:46 | TRACE   | __main__:_process_file:400 - Processing file 'document.docx' (size: 1048576 bytes)
+2026-02-16 11:16:46 | DEBUG   | __main__:_process_file:420 - Skipped (unchanged): document.docx
+```
+
 ## Troubleshooting
 
 ### Common Issues
@@ -314,12 +357,18 @@ cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run dataverse_backup.py"
    - Verify `.env.*` files exist and have correct values
    - Check file permissions and encoding
 
+4. **Logging Issues**:
+   - Check that `loguru` is installed (`uv sync` to install dependencies)
+   - Verify log file permissions in the working directory
+
 ### Logs
 
 Check log files for detailed information:
-- `sharepoint_incremental_backup.log` - SharePoint backup logs
-- `exchange_incremental_backup.log` - Exchange backup logs  
-- `dataverse_backup.log` - Dataverse backup logs
+- `sharepoint_incremental_backup.log` - SharePoint backup logs (TRACE level)
+- `exchange_incremental_backup.log` - Exchange backup logs (TRACE level)  
+- `dataverse_backup.log` - Dataverse backup logs (TRACE level)
+
+Log files include complete debugging information and are automatically rotated and compressed.
 
 ## Archived Files
 

@@ -8,7 +8,6 @@ Preserves the original sharepoint_graph_backup.py as a standalone tool.
 import os
 import sys
 import json
-import logging
 import argparse
 import hashlib
 import sqlite3
@@ -18,19 +17,42 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+# Import loguru for enhanced logging
+from loguru import logger
+
 # Import our checksum database
 from checksum_db import BackupChecksumDB, calculate_stream_checksum
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('sharepoint_incremental_backup.log'),
-        logging.StreamHandler(sys.stdout)
-    ]
+# Configure loguru with custom levels and formatting
+# Remove default handler
+logger.remove()
+
+# Add custom levels
+logger.level("TRACE", color="<cyan>", icon="🔍")
+logger.level("DEBUG", color="<blue>", icon="🐛")
+logger.level("INFO", color="<green>", icon="ℹ️")
+logger.level("SUCCESS", color="<bold><green>", icon="✅")
+logger.level("WARNING", color="<yellow>", icon="⚠️")
+logger.level("ERROR", color="<red>", icon="❌")
+logger.level("CRITICAL", color="<bold><red>", icon="💥")
+
+# Add console handler with custom format
+logger.add(
+    sys.stdout,
+    format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+    level="INFO",  # Default level
+    colorize=True
 )
-logger = logging.getLogger(__name__)
+
+# Add file handler for detailed logging
+logger.add(
+    "sharepoint_incremental_backup.log",
+    format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}",
+    level="TRACE",  # Log everything to file
+    rotation="10 MB",  # Rotate when file reaches 10 MB
+    retention="30 days",  # Keep logs for 30 days
+    compression="zip"  # Compress rotated logs
+)
 
 
 class SharePointIncrementalBackup:
@@ -71,8 +93,10 @@ class SharePointIncrementalBackup:
         }
         
         logger.info(f"Incremental backup initialized")
-        logger.info(f"Database: {db_path}")
-        logger.info(f"Backup directory: {backup_dir}")
+        logger.debug(f"Database: {db_path}")
+        logger.debug(f"Backup directory: {backup_dir}")
+        logger.trace(f"Client ID: {client_id[:8]}...")
+        logger.trace(f"Tenant ID: {tenant_id}")
     
     def _get_access_token(self) -> str:
         """Get Microsoft Graph access token."""

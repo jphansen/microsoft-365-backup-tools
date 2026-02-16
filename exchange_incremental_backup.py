@@ -7,24 +7,46 @@ Wrapper around exchange_backup.py with command-line interface similar to sharepo
 import os
 import sys
 import json
-import logging
 import argparse
 from datetime import datetime
 from pathlib import Path
 
+# Import loguru for enhanced logging
+from loguru import logger
+
 # Import the existing ExchangeBackup class
 from exchange_backup import ExchangeBackup, load_config, validate_config
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('exchange_incremental_backup.log'),
-        logging.StreamHandler(sys.stdout)
-    ]
+# Configure loguru with custom levels and formatting
+# Remove default handler
+logger.remove()
+
+# Add custom levels
+logger.level("TRACE", color="<cyan>", icon="🔍")
+logger.level("DEBUG", color="<blue>", icon="🐛")
+logger.level("INFO", color="<green>", icon="ℹ️")
+logger.level("SUCCESS", color="<bold><green>", icon="✅")
+logger.level("WARNING", color="<yellow>", icon="⚠️")
+logger.level("ERROR", color="<red>", icon="❌")
+logger.level("CRITICAL", color="<bold><red>", icon="💥")
+
+# Add console handler with custom format
+logger.add(
+    sys.stdout,
+    format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+    level="INFO",  # Default level
+    colorize=True
 )
-logger = logging.getLogger(__name__)
+
+# Add file handler for detailed logging
+logger.add(
+    "exchange_incremental_backup.log",
+    format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}",
+    level="TRACE",  # Log everything to file
+    rotation="10 MB",  # Rotate when file reaches 10 MB
+    retention="30 days",  # Keep logs for 30 days
+    compression="zip"  # Compress rotated logs
+)
 
 
 def create_config_from_args(args):
@@ -94,39 +116,39 @@ def show_backup_stats(db_path, days=30):
         db = ExchangeChecksumDB(db_path)
         stats = db.get_exchange_backup_stats(days)
         
-        print("=" * 80)
-        print("📊 EXCHANGE BACKUP STATISTICS")
-        print("=" * 80)
-        print(f"Time period: Last {days} days")
-        print(f"Total backups: {stats.get('total_backups', 0)}")
-        print(f"Total emails backed up: {stats.get('total_emails_backed_up', 0)}")
-        print(f"Total emails skipped: {stats.get('total_emails_skipped', 0)}")
-        print(f"Total attachments backed up: {stats.get('total_attachments_backed_up', 0)}")
-        print(f"Total attachments skipped: {stats.get('total_attachments_skipped', 0)}")
-        print(f"Total size backed up: {stats.get('total_size_backed_up', 0):,} bytes")
+        logger.info("=" * 80)
+        logger.info("📊 EXCHANGE BACKUP STATISTICS")
+        logger.info("=" * 80)
+        logger.info(f"Time period: Last {days} days")
+        logger.info(f"Total backups: {stats.get('total_backups', 0)}")
+        logger.info(f"Total emails backed up: {stats.get('total_emails_backed_up', 0)}")
+        logger.info(f"Total emails skipped: {stats.get('total_emails_skipped', 0)}")
+        logger.info(f"Total attachments backed up: {stats.get('total_attachments_backed_up', 0)}")
+        logger.info(f"Total attachments skipped: {stats.get('total_attachments_skipped', 0)}")
+        logger.info(f"Total size backed up: {stats.get('total_size_backed_up', 0):,} bytes")
         
         if stats.get('backup_types'):
-            print("\nBackup type distribution:")
+            logger.info("\nBackup type distribution:")
             for backup_type, count in stats['backup_types'].items():
-                print(f"  {backup_type}: {count}")
+                logger.info(f"  {backup_type}: {count}")
         
         if stats.get('user_distribution'):
-            print(f"\nUser distribution ({len(stats['user_distribution'])} users):")
+            logger.info(f"\nUser distribution ({len(stats['user_distribution'])} users):")
             for user in stats['user_distribution'][:10]:  # Show top 10
-                print(f"  {user['user_id']}: {user['backup_count']} backups, {user['total_emails']} emails")
+                logger.info(f"  {user['user_id']}: {user['backup_count']} backups, {user['total_emails']} emails")
             if len(stats['user_distribution']) > 10:
-                print(f"  ... and {len(stats['user_distribution']) - 10} more users")
+                logger.info(f"  ... and {len(stats['user_distribution']) - 10} more users")
         
         if stats.get('recent_backups'):
-            print(f"\nRecent backups ({len(stats['recent_backups'])} most recent):")
+            logger.info(f"\nRecent backups ({len(stats['recent_backups'])} most recent):")
             for backup in stats['recent_backups']:
                 start_time = backup.get('start_time', 'Unknown')
                 backup_type = backup.get('backup_type', 'Unknown')
                 emails_backed = backup.get('emails_backed_up', 0)
                 emails_skipped = backup.get('emails_skipped', 0)
-                print(f"  {start_time}: {backup_type} - {emails_backed} backed up, {emails_skipped} skipped")
+                logger.info(f"  {start_time}: {backup_type} - {emails_backed} backed up, {emails_skipped} skipped")
         
-        print("=" * 80)
+        logger.info("=" * 80)
         
     except Exception as e:
         logger.error(f"Failed to get backup statistics: {str(e)}")
