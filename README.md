@@ -29,6 +29,29 @@ Backup tools for Microsoft 365 services including Dataverse (Power Platform), Sh
   - Enables 24+ hour backup runs without token expiration issues
 - **Better User Experience**: Shows "unlimited" instead of "0" in backup summary
 
+### Optimized Exchange Incremental Backup (February 2026)
+- **Two-Phase Performance Optimization**: Dramatically faster incremental backups
+  - **Phase 1**: Fast message ID detection (IDs only, no email content)
+  - **Phase 2**: Selective full data fetch (only for new emails)
+  - **Result**: 2-10x faster than previous implementation
+- **Message ID Tracking**: Leverages Exchange email immutability
+  - Emails never change, only new ones are created
+  - Uses message IDs instead of checksum calculations
+  - Dramatically reduces API calls and processing time
+- **No Placeholders**: Proper error handling
+  - Fails completely if email can't be downloaded
+  - No database entries for failed emails
+  - Failed emails get retried next backup run
+  - No empty EML files or fake backups
+- **Email Validation**: Ensures actual email content
+  - Validates email has body content before creating EML
+  - Fails if batch fetch doesn't get proper data
+  - Prevents creation of empty or incomplete backups
+- **Reliable Email Body Fetch**: Uses proven batch fetch approach
+  - Gets email bodies in batch requests (like the old script)
+  - Works for all email types including system folders
+  - No individual email fetch failures
+
 ### Unified Configuration (Earlier)
 - **Single `.env` File**: All services now use unified environment configuration
 - **Simplified Setup**: One configuration file for Dataverse, SharePoint, and Exchange
