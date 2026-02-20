@@ -151,9 +151,12 @@ def rebuild_sharepoint_db(
     dry_run: bool = False,
 ) -> Dict[str, Any]:
     """
-    Walk *backup_root* looking for ``site_metadata.json`` files (one per
-    backup session), then index every content file in that session into the
-    SharePoint checksum database.
+    Walk *backup_root* looking for backup sessions, then index every content file
+    in that session into the SharePoint checksum database.
+
+    Sessions are identified by directories with timestamp names (YYYYMMDD_HHMMSS).
+    If site_metadata.json exists, it's used to get site_id and site_name.
+    Otherwise, site information is inferred from directory structure.
 
     Only the **most recent session** for each ``(site_id, relative_path)``
     pair ends up in the DB – older sessions are processed first and the later
@@ -173,39 +176,69 @@ def rebuild_sharepoint_db(
 
     db = None if dry_run else BackupChecksumDB(db_path)
 
-    # rglob finds all sessions regardless of nesting (backup/ or backup/sharepoint/)
-    # Sort so older timestamps are processed before newer ones.
-    meta_files = sorted(backup_root.rglob("site_metadata.json"))
-    if not meta_files:
-        logger.warning(f"No site_metadata.json found under {backup_root}")
+    # Find all potential session directories (directories with timestamp names)
+    # Look in both backup_root and backup_root/sharepoint
+    session_dirs = []
+    
+    # First, check if there's a sharepoint subdirectory
+    sharepoint_dir = backup_root / "sharepoint"
+    if sharepoint_dir.is_dir():
+        search_root = sharepoint_dir
+    else:
+        search_root = backup_root
+    
+    # Look for directories matching timestamp pattern YYYYMMDD_HHMMSS
+    timestamp_pattern = re.compile(r'^\d{8}_\d{6}$')
+    
+    for site_dir in search_root.iterdir():
+        if not site_dir.is_dir():
+            continue
+        # Skip exchange directory
+        if site_dir.name == "exchange":
+            continue
+            
+        for session_dir in site_dir.iterdir():
+            if not session_dir.is_dir():
+                continue
+            if timestamp_pattern.match(session_dir.name):
+                session_dirs.append((site_dir, session_dir))
+    
+    if not session_dirs:
+        logger.warning(f"No backup sessions found under {backup_root}")
+        logger.warning("Expected structure: <backup_dir>/<site_name>/<YYYYMMDD_HHMMSS>/")
         return stats
-
-    for meta_path in meta_files:
-        # Exclude anything inside the exchange sub-tree
-        if "exchange" in meta_path.parts:
-            continue
-
-        session_dir = meta_path.parent
-        try:
-            with open(meta_path, encoding="utf-8") as fh:
-                meta = json.load(fh)
-        except Exception as exc:
-            logger.warning(f"  Could not read {meta_path}: {exc}")
-            continue
-
-        site_id   = meta.get("site_id", f"unknown:{session_dir.parent.name}")
-        site_name = meta.get("site_name", session_dir.parent.name)
+    
+    # Sort by session directory name (timestamp) so older sessions are processed first
+    session_dirs.sort(key=lambda x: x[1].name)
+    
+    # Track sites we've seen
+    sites_seen = set()
+    
+    for site_dir, session_dir in session_dirs:
+        site_name = site_dir.name
         timestamp = session_dir.name
-
+        
+        # Try to read site_metadata.json if it exists
+        meta_path = session_dir / "site_metadata.json"
+        site_id = f"inferred:{site_name}"
+        
+        if meta_path.is_file():
+            try:
+                with open(meta_path, encoding="utf-8") as fh:
+                    meta = json.load(fh)
+                site_id = meta.get("site_id", site_id)
+                site_name_from_meta = meta.get("site_name", site_name)
+                if site_name_from_meta != site_name:
+                    logger.debug(f"  Using site name from metadata: {site_name_from_meta}")
+                    site_name = site_name_from_meta
+            except Exception as exc:
+                logger.warning(f"  Could not read {meta_path}: {exc}")
+        
         stats["sessions_found"] += 1
-        if site_name not in {
-            m.get("site_name")
-            for m in [meta]
-        }:
+        if site_name not in sites_seen:
             stats["sites_found"] += 1
-        else:
-            stats["sites_found"] += 1
-
+            sites_seen.add(site_name)
+        
         logger.info(f"  Session: {site_name}  [{timestamp}]  site_id={site_id[:40]}…")
 
         for abs_path in sorted(session_dir.rglob("*")):
