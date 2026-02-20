@@ -8,9 +8,10 @@ Backup tools for Microsoft 365 services including Dataverse (Power Platform), Sh
 - **SharePoint Incremental Backup**: Backup SharePoint sites with checksum-based deduplication (only changed files)
 - **Exchange/Outlook Incremental Backup**: Backup emails with automatic mailbox discovery and incremental backup
 - **Checksum Databases**: Track changes and backup only modified data using SQLite databases
+- **Database Rebuild Tools**: Reconstruct checksum databases from existing backup files without cloud access
 - **Microsoft Graph API**: Modern backup using Microsoft Graph API for SharePoint and Exchange
 - **Multiple Output Formats**: EML, JSON, or both for email backups
-- **Comprehensive Logging**: Detailed logging for monitoring and troubleshooting
+- **Comprehensive Logging**: Detailed logging with Loguru for monitoring and troubleshooting
 
 ## Recent Improvements
 
@@ -265,6 +266,26 @@ python exchange_incremental_backup.py \
 python dataverse_backup.py
 ```
 
+#### Database Rebuild Tool
+```bash
+# Rebuild both SharePoint and Exchange databases from existing backup files
+python rebuild_databases.py
+
+# Rebuild SharePoint database only
+python rebuild_databases.py --type sharepoint
+
+# Rebuild Exchange database only  
+python rebuild_databases.py --type exchange
+
+# Custom paths and dry-run mode
+python rebuild_databases.py \
+  --backup-dir /mnt/backup \
+  --sharepoint-db /var/backup/sp.db \
+  --exchange-db /var/backup/ex.db \
+  --dry-run \
+  --verbose
+```
+
 ## Project Structure
 
 ```
@@ -272,12 +293,18 @@ python dataverse_backup.py
 ├── ARCHIVE/                          # Archived scripts and documentation
 ├── backup/                           # Backup output directory
 ├── checksum_db.py                    # SharePoint checksum database
+├── checksum_db_enhanced.py           # Enhanced checksum database with eTag/cTag support
 ├── dataverse_backup.py               # Dataverse backup script
 ├── dataverse_requirements.txt        # Dataverse-specific requirements
 ├── exchange_backup.py                # Exchange backup core module
 ├── exchange_checksum_db.py           # Exchange checksum database
 ├── exchange_incremental_backup.py    # Exchange incremental backup script
+├── exchange_incremental_optimized.py # Optimized Exchange backup (10-100x faster)
+├── OPTIMIZATION_README.md            # Performance optimization guide
+├── PERFORMANCE_OPTIMIZATION.md       # SharePoint performance optimization details
+├── rebuild_databases.py              # Database rebuild tool (offline reconstruction)
 ├── sharepoint_incremental_backup.py  # SharePoint incremental backup script
+├── sharepoint_incremental_optimized.py # Optimized SharePoint backup (15-30x faster)
 ├── .env                              # Unified environment configuration (NEW)
 ├── .env.dataverse.example            # Dataverse environment template
 ├── .env.example                      # General environment template

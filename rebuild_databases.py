@@ -253,19 +253,86 @@ def rebuild_sharepoint_db(
 # Exchange rebuild
 # ===========================================================================
 
+def _session_is_multi_user(session_dir: Path) -> bool:
+    """
+    Detect whether *session_dir* uses the OLD multi-user layout::
+
+        session_dir / <user_name> / <folder_name> / message.eml
+
+    vs the NEW single-user layout::
+
+        session_dir / <folder_name> / message.eml
+
+    Heuristic: if every direct child directory contains only sub-directories
+    (no .eml/.json files immediately inside it), the children are user-name
+    directories, not mail-folder directories.  Returns True for old layout.
+    """
+    has_any_child_dir = False
+    for child in session_dir.iterdir():
+        if not child.is_dir():
+            continue
+        has_any_child_dir = True
+        # If any child dir contains a direct email file, this child IS a mail
+        # folder → new single-user layout.
+        for f in child.iterdir():
+            if (
+                f.is_file()
+                and f.suffix.lower() in (".eml", ".json")
+                and f.name not in _SKIP_FILENAMES
+            ):
+                return False
+    # Either no child dirs at all (empty session), or none of the child dirs
+    # contained email files directly → treat as old multi-user layout.
+    return has_any_child_dir
+
+
+def _collect_messages_from_folder_dir(
+    folder_dir: Path,
+    messages: Dict[str, Dict[str, Any]],
+) -> None:
+    """
+    Register every .eml / .json file found directly inside *folder_dir*
+    into *messages* keyed by filename stem.
+    """
+    folder_name = folder_dir.name
+    for f in folder_dir.iterdir():
+        if not f.is_file():
+            continue
+        ext = f.suffix.lower()
+        if ext not in (".eml", ".json"):
+            continue
+        if f.name in _SKIP_FILENAMES:
+            continue
+        stem = f.stem
+        if stem not in messages:
+            messages[stem] = {"eml": None, "json": None, "folder": folder_name}
+        messages[stem][ext.lstrip(".")] = f
+
+
 def rebuild_exchange_db(
     backup_root: Path,
     db_path: str,
     dry_run: bool = False,
 ) -> Dict[str, Any]:
     """
-    Walk ``<backup_root>/exchange/<user>/<timestamp>/`` and index every
-    .eml / .json email file into the Exchange checksum database.
+    Walk ``<backup_root>/exchange/`` and index every .eml / .json email file
+    into the Exchange checksum database.
+
+    Handles two on-disk layouts transparently:
+
+    **New layout** (per-user sessions)::
+
+        exchange/<user>/<timestamp>/<folder>/<files>
+
+    **Old layout** (multi-user "all_users" sessions)::
+
+        exchange/all_users/<timestamp>/<user>/<folder>/<files>
 
     For each message stem, metadata is extracted preferentially from the
-    paired .json file (which contains the full Graph API response), falling
-    back to EML header parsing.  When both formats exist, both are noted but
-    only one checksum entry is stored (keyed on the message_id).
+    paired .json file (full Graph API response), falling back to EML header
+    parsing.  User email addresses are resolved from ``user_metadata.json``
+    where available; a pre-scan builds a ``short_name → email`` map from all
+    new-layout sessions so old-layout entries receive correct full emails.
     """
     from exchange_checksum_db import ExchangeChecksumDB     # lazy import
 
@@ -289,13 +356,128 @@ def rebuild_exchange_db(
 
     db = None if dry_run else ExchangeChecksumDB(db_path)
 
+    # ------------------------------------------------------------------
+    # Phase 0 – build short_name → full_email map from all user_metadata.json
+    # files found under new-layout sessions.  This allows old-layout sessions
+    # (which have no metadata file) to store the correct full email address.
+    # ------------------------------------------------------------------
+    user_email_map: Dict[str, str] = {}
+    for user_dir in exchange_dir.iterdir():
+        if not user_dir.is_dir() or user_dir.name == "all_users":
+            continue
+        for session_dir in user_dir.iterdir():
+            meta_path = session_dir / "user_metadata.json"
+            if meta_path.is_file():
+                try:
+                    with open(meta_path, encoding="utf-8") as fh:
+                        umeta = json.load(fh)
+                    email = (
+                        umeta.get("user_email")
+                        or umeta.get("userPrincipalName")
+                        or umeta.get("mail")
+                    )
+                    if email:
+                        user_email_map[user_dir.name] = email
+                        break           # one successful hit per user dir is enough
+                except Exception:
+                    pass
+
+    logger.debug(f"  User email map from metadata: {user_email_map}")
+
+    # ------------------------------------------------------------------
+    # Helper: process one message records dict and write to DB.
+    # ------------------------------------------------------------------
+    def _write_messages(
+        messages: Dict[str, Dict[str, Any]],
+        user_email: str,
+    ) -> None:
+        """Compute checksums for *messages* and upsert into the DB."""
+        for stem, info in messages.items():
+            json_file    = info["json"]
+            eml_file     = info["eml"]
+            folder_name  = info["folder"]
+            primary_file = json_file or eml_file
+            if primary_file is None:
+                continue
+
+            stats["messages_scanned"] += 1
+            try:
+                # Extract metadata
+                subject          = ""
+                sender           = ""
+                received_date    = ""
+                message_id       = stem       # fallback
+                has_attachments  = False
+                attachment_count = 0
+                backup_format    = (
+                    "both" if (eml_file and json_file)
+                    else ("json" if json_file else "eml")
+                )
+
+                if json_file and json_file.is_file():
+                    try:
+                        with open(json_file, encoding="utf-8") as jf:
+                            msg_data = json.load(jf)
+                        message_id       = msg_data.get("id") or stem
+                        subject          = msg_data.get("subject", "")
+                        from_block       = msg_data.get("from", {})
+                        sender           = from_block.get("emailAddress", {}).get("address", "")
+                        received_date    = msg_data.get("receivedDateTime", "")
+                        has_attachments  = msg_data.get("hasAttachments", False)
+                        attachment_count = len(msg_data.get("attachments", []))
+                    except Exception as exc:
+                        logger.debug(f"    JSON parse error {json_file.name}: {exc}")
+
+                elif eml_file and eml_file.is_file():
+                    hdrs          = parse_eml_headers(eml_file)
+                    subject       = hdrs.get("subject", "")
+                    sender        = hdrs.get("sender", "")
+                    received_date = hdrs.get("received_date", "")
+                    _, message_id = extract_msg_id_from_stem(stem)
+
+                checksum    = sha256_file(primary_file)
+                file_size   = primary_file.stat().st_size
+                backup_path = str(primary_file.parent)
+
+                logger.debug(
+                    f"    [{folder_name}] {subject[:55]!r}  "
+                    f"{checksum[:12]}…  {human_size(file_size)}"
+                )
+
+                if not dry_run:
+                    db.update_email_record(
+                        user_id          = user_email,
+                        message_id       = message_id,
+                        folder_id        = None,
+                        folder_name      = folder_name,
+                        subject          = subject,
+                        sender           = sender,
+                        received_date    = received_date,
+                        message_size     = file_size,
+                        checksum         = checksum,
+                        has_attachments  = has_attachments,
+                        attachment_count = attachment_count,
+                        backup_format    = backup_format,
+                        backup_path      = backup_path,
+                    )
+
+                stats["messages_written"] += 1
+                stats["total_bytes"]      += file_size
+
+            except Exception as exc:
+                logger.error(f"    Error processing message stem '{stem}': {exc}")
+                stats["messages_errors"] += 1
+
+    # ------------------------------------------------------------------
+    # Phase 1 – walk user directories.
+    # ------------------------------------------------------------------
     for user_dir in sorted(exchange_dir.iterdir()):
         if not user_dir.is_dir():
             continue
 
         user_name = user_dir.name
         stats["users_found"] += 1
-        logger.info(f"  User: {user_name}")
+        logger.info(f"  User dir: {user_name}")
 
         for session_dir in sorted(user_dir.iterdir()):
             if not session_dir.is_dir():
@@ -306,130 +488,80 @@ def rebuild_exchange_db(
             stats["sessions_found"] += 1
             timestamp = session_dir.name
 
-            # ---- resolve user_email from user_metadata.json ----
-            user_email = user_name
+            # ---- Resolve user email for this session ----
+            user_email = user_email_map.get(user_name, user_name)
+
+            # Override from user_metadata.json if present (new layout)
             user_meta_path = session_dir / "user_metadata.json"
             if user_meta_path.is_file():
                 try:
                     with open(user_meta_path, encoding="utf-8") as fh:
                         umeta = json.load(fh)
                     user_email = (
-                        umeta.get("userPrincipalName")
+                        umeta.get("user_email")
+                        or umeta.get("userPrincipalName")
                         or umeta.get("mail")
-                        or user_name
+                        or user_email
                     )
                 except Exception:
                     pass
 
-            logger.debug(f"    Session {timestamp}  →  {user_email}")
+            # ---- Detect old vs new layout ----
+            multi_user = _session_is_multi_user(session_dir)
 
-            # ---- collect message stems per folder ----
-            # Structure: {stem: {"eml": Path|None, "json": Path|None, "folder": str}}
-            messages: Dict[str, Dict[str, Any]] = {}
+            if multi_user:
+                # OLD LAYOUT: session/<user_name>/<folder>/<files>
+                logger.debug(
+                    f"    Session {timestamp}  [multi-user layout]  "
+                    f"parent={user_name}"
+                )
+                for subuser_dir in sorted(session_dir.iterdir()):
+                    if not subuser_dir.is_dir():
+                        continue
+                    subuser_name  = subuser_dir.name
+                    subuser_email = user_email_map.get(subuser_name, subuser_name)
+                    logger.debug(f"      Sub-user: {subuser_name}  →  {subuser_email}")
 
-            def _register(file: Path, folder: str) -> None:
-                """Add *file* to the message registry under its stem."""
-                ext = file.suffix.lower()
-                if ext not in (".eml", ".json"):
-                    return
-                if file.name in _SKIP_FILENAMES:
-                    return
-                stem = file.stem
-                if stem not in messages:
-                    messages[stem] = {"eml": None, "json": None, "folder": folder}
-                messages[stem][ext.lstrip(".")] = file
+                    messages: Dict[str, Dict[str, Any]] = {}
+                    for folder_dir in sorted(subuser_dir.iterdir()):
+                        if folder_dir.is_dir():
+                            _collect_messages_from_folder_dir(folder_dir, messages)
+                        elif (
+                            folder_dir.is_file()
+                            and folder_dir.suffix.lower() in (".eml", ".json")
+                            and folder_dir.name not in _SKIP_FILENAMES
+                        ):
+                            # File directly under the user dir (no folder)
+                            stem = folder_dir.stem
+                            ext  = folder_dir.suffix.lower().lstrip(".")
+                            if stem not in messages:
+                                messages[stem] = {"eml": None, "json": None, "folder": "root"}
+                            messages[stem][ext] = folder_dir
 
-            # Files inside folder sub-directories
-            for child in session_dir.iterdir():
-                if child.is_dir():
-                    for f in child.iterdir():
-                        if f.is_file():
-                            _register(f, child.name)
-                elif child.is_file():
-                    _register(child, "root")
+                    _write_messages(messages, subuser_email)
 
-            # ---- process each message ----
-            for stem, info in messages.items():
-                json_file   = info["json"]
-                eml_file    = info["eml"]
-                folder_name = info["folder"]
+            else:
+                # NEW LAYOUT: session/<folder>/<files>
+                logger.debug(
+                    f"    Session {timestamp}  [single-user layout]  "
+                    f"user={user_email}"
+                )
+                messages: Dict[str, Dict[str, Any]] = {}
+                for child in sorted(session_dir.iterdir()):
+                    if child.is_dir():
+                        _collect_messages_from_folder_dir(child, messages)
+                    elif (
+                        child.is_file()
+                        and child.suffix.lower() in (".eml", ".json")
+                        and child.name not in _SKIP_FILENAMES
+                    ):
+                        stem = child.stem
+                        ext  = child.suffix.lower().lstrip(".")
+                        if stem not in messages:
+                            messages[stem] = {"eml": None, "json": None, "folder": "root"}
+                        messages[stem][ext] = child
 
-                primary_file = json_file or eml_file
-                if primary_file is None:
-                    continue
-
-                stats["messages_scanned"] += 1
-
-                try:
-                    # --- Extract metadata ---
-                    subject         = ""
-                    sender          = ""
-                    received_date   = ""
-                    message_id      = stem          # fallback
-                    has_attachments = False
-                    attachment_count = 0
-                    backup_format   = (
-                        "both" if (eml_file and json_file)
-                        else ("json" if json_file else "eml")
-                    )
-
-                    if json_file and json_file.is_file():
-                        try:
-                            with open(json_file, encoding="utf-8") as jf:
-                                msg_data = json.load(jf)
-                            message_id      = msg_data.get("id") or stem
-                            subject         = msg_data.get("subject", "")
-                            from_block      = msg_data.get("from", {})
-                            sender          = (
-                                from_block.get("emailAddress", {}).get("address", "")
-                            )
-                            received_date   = msg_data.get("receivedDateTime", "")
-                            has_attachments = msg_data.get("hasAttachments", False)
-                            attachment_count = len(msg_data.get("attachments", []))
-                        except Exception as exc:
-                            logger.debug(f"    JSON parse error {json_file.name}: {exc}")
-
-                    elif eml_file and eml_file.is_file():
-                        hdrs          = parse_eml_headers(eml_file)
-                        subject       = hdrs.get("subject", "")
-                        sender        = hdrs.get("sender", "")
-                        received_date = hdrs.get("received_date", "")
-                        # Best-effort message_id recovery from filename
-                        _, message_id = extract_msg_id_from_stem(stem)
-
-                    # --- Checksum ---
-                    checksum  = sha256_file(primary_file)
-                    file_size = primary_file.stat().st_size
-                    backup_path = str(primary_file.parent)
-
-                    logger.debug(
-                        f"    [{folder_name}] {subject[:55]!r}  "
-                        f"{checksum[:12]}…  {human_size(file_size)}"
-                    )
-
-                    if not dry_run:
-                        db.update_email_record(
-                            user_id          = user_email,
-                            message_id       = message_id,
-                            folder_id        = None,
-                            folder_name      = folder_name,
-                            subject          = subject,
-                            sender           = sender,
-                            received_date    = received_date,
-                            message_size     = file_size,
-                            checksum         = checksum,
-                            has_attachments  = has_attachments,
-                            attachment_count = attachment_count,
-                            backup_format    = backup_format,
-                            backup_path      = backup_path,
-                        )
-
-                    stats["messages_written"] += 1
-                    stats["total_bytes"]      += file_size
-
-                except Exception as exc:
-                    logger.error(f"    Error processing message stem '{stem}': {exc}")
-                    stats["messages_errors"] += 1
+                _write_messages(messages, user_email)
 
     return stats
 
