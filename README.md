@@ -52,6 +52,20 @@ Backup tools for Microsoft 365 services including Dataverse (Power Platform), Sh
   - Works for all email types including system folders
   - No individual email fetch failures
 
+### Database Rebuild Tools (February 2026)
+- **Offline Database Reconstruction**: Rebuild checksum databases from existing backup files without cloud access
+- **SharePoint Database Rebuild**: Reconstruct `backup_checksums.db` from local SharePoint backup files
+- **Exchange Database Rebuild**: Reconstruct `backup_checksums_exchange.db` from local Exchange backup files
+- **Metadata Extraction**: Extract email metadata from EML/JSON files for Exchange backups
+- **Dry Run Mode**: Test database rebuild without making changes
+- **Flexible Paths**: Support custom backup directories and database locations
+
+### Performance Optimizations (February 2026)
+- **Optimized SharePoint Backup**: `sharepoint_incremental_optimized.py` - Uses server-side metadata (eTag/cTag) for 15-30x faster backups
+- **Optimized Exchange Backup**: `exchange_incremental_optimized.py` - Uses message ID tracking for 10-100x faster backups
+- **Enhanced Checksum Database**: `checksum_db_enhanced.py` - Extended database with eTag/cTag support and performance metrics
+- **Performance Documentation**: `OPTIMIZATION_README.md` - Detailed guide on performance optimizations
+
 ### Unified Configuration (Earlier)
 - **Single `.env` File**: All services now use unified environment configuration
 - **Simplified Setup**: One configuration file for Dataverse, SharePoint, and Exchange

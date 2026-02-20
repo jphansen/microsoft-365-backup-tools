@@ -136,6 +136,28 @@ class ExchangeChecksumDB:
                 return dict(row)
             return None
     
+    def get_user_email_records(self, user_id: str) -> List[Dict[str, Any]]:
+        """
+        Get all email records for a user.
+        
+        Args:
+            user_id: User ID or email address
+            
+        Returns:
+            List of email records
+        """
+        with sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                SELECT * FROM email_messages 
+                WHERE user_id = ?
+            ''', (user_id,))
+            
+            rows = cursor.fetchall()
+            return [dict(row) for row in rows]
+    
     def update_email_record(self, user_id: str, message_id: str, folder_id: str = None,
                            folder_name: str = None, subject: str = None, sender: str = None,
                            received_date: str = None, message_size: int = 0,

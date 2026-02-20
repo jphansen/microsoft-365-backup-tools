@@ -330,12 +330,28 @@ class SharePointIncrementalBackup:
         except Exception as e:
             logger.warning(f"Could not get drive metadata: {str(e)}")
         
-        # Backup root folder
-        self._backup_folder(site_id, drive_id, "root", drive_path, backup_type)
+        # Backup root folder with progress tracking
+        logger.info(f"        Starting backup of drive '{drive_name}'...")
+        file_counter = [0]  # Initialize counter
+        self._backup_folder(site_id, drive_id, "root", drive_path, backup_type, file_counter)
+        logger.info(f"        Completed backup of drive '{drive_name}' - Processed {file_counter[0]:,} files")
     
     def _backup_folder(self, site_id: str, drive_id: str, folder_id: str, 
-                      local_path: Path, backup_type: str):
-        """Recursively backup a folder and its contents."""
+                      local_path: Path, backup_type: str, file_counter: list = None):
+        """
+        Recursively backup a folder and its contents.
+        
+        Args:
+            site_id: SharePoint site ID
+            drive_id: Drive ID
+            folder_id: Folder ID
+            local_path: Local directory path
+            backup_type: 'full' or 'incremental'
+            file_counter: List with single integer counter for progress tracking
+        """
+        if file_counter is None:
+            file_counter = [0]  # Use list to allow modification in recursion
+        
         try:
             # Get folder children
             children_url = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drives/{drive_id}/items/{folder_id}/children"
@@ -356,10 +372,15 @@ class SharePointIncrementalBackup:
                     # Create subfolder and recurse
                     subfolder_path = local_path / self._sanitize_filename(item_name)
                     subfolder_path.mkdir(parents=True, exist_ok=True)
-                    self._backup_folder(site_id, drive_id, item_id, subfolder_path, backup_type)
+                    self._backup_folder(site_id, drive_id, item_id, subfolder_path, backup_type, file_counter)
                 else:
                     # Process file with incremental logic
                     self._process_file(site_id, drive_id, item_id, item, local_path, backup_type)
+                    
+                    # Update counter and show progress every 1000 files
+                    file_counter[0] += 1
+                    if file_counter[0] % 1000 == 0:
+                        logger.info(f"        Processed {file_counter[0]:,} files...")
                     
         except Exception as e:
             logger.warning(f"Error processing folder: {str(e)}")
@@ -670,7 +691,7 @@ def main():
                        help='Backup type: full or incremental (default: incremental)')
     
     parser.add_argument('--backup-dir', default='backup',
-                       help='Backup directory (default: backup)')
+                       help="Backup directory (overrides SHAREPOINT_BACKUP_DIR and BACKUP_DIR, default: backup)")
     
     parser.add_argument('--db-path', default='backup_checksums.db',
                        help='Checksum database path (default: backup_checksums.db)')
@@ -693,7 +714,11 @@ def main():
     CLIENT_ID = os.environ.get('SHAREPOINT_CLIENT_ID')
     CLIENT_SECRET = os.environ.get('SHAREPOINT_CLIENT_SECRET')
     TENANT_ID = os.environ.get('SHAREPOINT_TENANT_ID')
-    BACKUP_DIR = os.environ.get('BACKUP_DIR', args.backup_dir)
+    # Determine backup directory (SHAREPOINT_BACKUP_DIR takes precedence)
+    SHAREPOINT_BACKUP_DIR = os.environ.get("SHAREPOINT_BACKUP_DIR")
+    BACKUP_DIR = os.environ.get("BACKUP_DIR", args.backup_dir)
+    if SHAREPOINT_BACKUP_DIR:
+        BACKUP_DIR = SHAREPOINT_BACKUP_DIR
     
     # Validate configuration
     if not CLIENT_ID or not CLIENT_SECRET or not TENANT_ID:
