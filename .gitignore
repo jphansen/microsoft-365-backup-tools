@@ -3,6 +3,7 @@
 .env.dataverse
 .env.exchange
 .env.sharepoint
+sundbusserne.env
 
 # Backup directories
 backup/

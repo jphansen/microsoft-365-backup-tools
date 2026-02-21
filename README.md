@@ -339,7 +339,7 @@ python sharepoint_cleanup_structur.py --root-dir BACKUP --verbose
 ├── rebuild_databases.py              # Database rebuild tool (offline reconstruction)
 ├── sharepoint_cleanup_structur.py    # SharePoint backup consolidation script (NEW)
 ├── sharepoint_incremental_optimized.py # Optimized SharePoint backup (15-30x faster)
-├── sundbusserne.env                  # Example environment configuration (NEW)
+├── sundbusserne.env.example          # Comprehensive example environment configuration (NEW)
 ├── .env                              # Unified environment configuration
 ├── .env.dataverse.example            # Dataverse environment template
 ├── .env.example                      # General environment template
