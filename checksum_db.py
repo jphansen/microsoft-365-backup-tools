@@ -33,7 +33,7 @@ class BackupChecksumDB:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.cursor()
             
-            # Create backup_files table
+            # Create backup_files table with eTag and cTag support
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS backup_files (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,11 +43,26 @@ class BackupChecksumDB:
                     file_size INTEGER,
                     last_modified TIMESTAMP,
                     checksum_sha256 TEXT,
+                    eTag TEXT,
+                    cTag TEXT,
                     backup_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     version INTEGER DEFAULT 1,
                     UNIQUE(site_id, file_path)
                 )
             ''')
+            
+            # Try to add eTag and cTag columns if they don't exist (for backward compatibility)
+            try:
+                cursor.execute("ALTER TABLE backup_files ADD COLUMN eTag TEXT")
+                logger.debug("Added eTag column to existing table")
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+            
+            try:
+                cursor.execute("ALTER TABLE backup_files ADD COLUMN cTag TEXT")
+                logger.debug("Added cTag column to existing table")
+            except sqlite3.OperationalError:
+                pass  # Column already exists
             
             # Create backup_history table
             cursor.execute('''
@@ -65,7 +80,7 @@ class BackupChecksumDB:
                 )
             ''')
             
-            # Create file_history table for version tracking
+            # Create file_history table for version tracking with eTag/cTag
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS file_history (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -74,10 +89,25 @@ class BackupChecksumDB:
                     checksum_sha256 TEXT,
                     file_size INTEGER,
                     last_modified TIMESTAMP,
+                    eTag TEXT,
+                    cTag TEXT,
                     backup_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (file_id) REFERENCES backup_files (id)
                 )
             ''')
+            
+            # Try to add eTag and cTag columns to file_history if they don't exist
+            try:
+                cursor.execute("ALTER TABLE file_history ADD COLUMN eTag TEXT")
+                logger.debug("Added eTag column to file_history table")
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+            
+            try:
+                cursor.execute("ALTER TABLE file_history ADD COLUMN cTag TEXT")
+                logger.debug("Added cTag column to file_history table")
+            except sqlite3.OperationalError:
+                pass  # Column already exists
             
             # Create indexes for performance
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_site_file ON backup_files (site_id, file_path)')
@@ -88,13 +118,13 @@ class BackupChecksumDB:
         
         logger.info(f"Checksum database initialized: {self.db_path}")
     
-    def get_file_record(self, site_id: str, file_path: str) -> Optional[Dict[str, Any]]:
+    def get_file_record(self, file_path: str, site_id: str = None) -> Optional[Dict[str, Any]]:
         """
         Get file record from database.
         
         Args:
-            site_id: SharePoint site ID
             file_path: File path within SharePoint
+            site_id: Optional SharePoint site ID (for backward compatibility)
             
         Returns:
             Dictionary with file record or None if not found
@@ -103,10 +133,18 @@ class BackupChecksumDB:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
             
-            cursor.execute('''
-                SELECT * FROM backup_files 
-                WHERE site_id = ? AND file_path = ?
-            ''', (site_id, file_path))
+            if site_id:
+                # Backward compatibility mode
+                cursor.execute('''
+                    SELECT * FROM backup_files 
+                    WHERE site_id = ? AND file_path = ?
+                ''', (site_id, file_path))
+            else:
+                # New mode - search by file_path only
+                cursor.execute('''
+                    SELECT * FROM backup_files 
+                    WHERE file_path = ?
+                ''', (file_path,))
             
             row = cursor.fetchone()
             if row:
@@ -114,9 +152,10 @@ class BackupChecksumDB:
             return None
     
     def update_file_record(self, site_id: str, file_path: str, file_name: str, 
-                          file_size: int, last_modified: str, checksum: str) -> int:
+                          file_size: int, last_modified: str, checksum: str,
+                          eTag: str = None, cTag: str = None) -> int:
         """
-        Update or insert file record in database.
+        Update or insert file record in database with optional eTag/cTag.
         
         Args:
             site_id: SharePoint site ID
@@ -125,6 +164,8 @@ class BackupChecksumDB:
             file_size: File size in bytes
             last_modified: Last modified timestamp
             checksum: SHA-256 checksum
+            eTag: Optional Microsoft Graph eTag
+            cTag: Optional Microsoft Graph cTag
             
         Returns:
             File ID in database
@@ -143,31 +184,48 @@ class BackupChecksumDB:
             if existing:
                 file_id, version = existing
                 
-                # Archive old version to history
+                # Archive old version to history with eTag/cTag
                 cursor.execute('''
-                    INSERT INTO file_history (file_id, version, checksum_sha256, file_size, last_modified)
-                    SELECT id, version, checksum_sha256, file_size, last_modified
+                    INSERT INTO file_history (file_id, version, checksum_sha256, file_size, last_modified, eTag, cTag)
+                    SELECT id, version, checksum_sha256, file_size, last_modified, eTag, cTag
                     FROM backup_files WHERE id = ?
                 ''', (file_id,))
                 
-                # Update file record with new version
-                cursor.execute('''
-                    UPDATE backup_files 
-                    SET file_name = ?, file_size = ?, last_modified = ?, 
-                        checksum_sha256 = ?, backup_timestamp = CURRENT_TIMESTAMP,
-                        version = version + 1
-                    WHERE id = ?
-                ''', (file_name, file_size, last_modified, checksum, file_id))
+                # Update file record with new version including eTag/cTag
+                if eTag is not None and cTag is not None:
+                    cursor.execute('''
+                        UPDATE backup_files 
+                        SET file_name = ?, file_size = ?, last_modified = ?, 
+                            checksum_sha256 = ?, eTag = ?, cTag = ?,
+                            backup_timestamp = CURRENT_TIMESTAMP,
+                            version = version + 1
+                        WHERE id = ?
+                    ''', (file_name, file_size, last_modified, checksum, eTag, cTag, file_id))
+                else:
+                    cursor.execute('''
+                        UPDATE backup_files 
+                        SET file_name = ?, file_size = ?, last_modified = ?, 
+                            checksum_sha256 = ?, backup_timestamp = CURRENT_TIMESTAMP,
+                            version = version + 1
+                        WHERE id = ?
+                    ''', (file_name, file_size, last_modified, checksum, file_id))
                 
                 logger.debug(f"Updated file record: {file_path} (v{version + 1})")
                 return file_id
             else:
                 # Insert new file record
-                cursor.execute('''
-                    INSERT INTO backup_files 
-                    (site_id, file_path, file_name, file_size, last_modified, checksum_sha256)
-                    VALUES (?, ?, ?, ?, ?, ?)
-                ''', (site_id, file_path, file_name, file_size, last_modified, checksum))
+                if eTag is not None and cTag is not None:
+                    cursor.execute('''
+                        INSERT INTO backup_files 
+                        (site_id, file_path, file_name, file_size, last_modified, checksum_sha256, eTag, cTag)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    ''', (site_id, file_path, file_name, file_size, last_modified, checksum, eTag, cTag))
+                else:
+                    cursor.execute('''
+                        INSERT INTO backup_files 
+                        (site_id, file_path, file_name, file_size, last_modified, checksum_sha256)
+                        VALUES (?, ?, ?, ?, ?, ?)
+                    ''', (site_id, file_path, file_name, file_size, last_modified, checksum))
                 
                 file_id = cursor.lastrowid
                 logger.debug(f"Created new file record: {file_path} (id: {file_id})")
@@ -187,20 +245,49 @@ class BackupChecksumDB:
         Returns:
             Tuple of (is_unchanged, file_record)
         """
-        record = self.get_file_record(site_id, file_path)
+        record = self.get_file_record(file_path, site_id)
         
         if not record:
             return False, None  # File not in database, needs backup
         
         # Quick check: size changed?
-        if current_size != record['file_size']:
+        if current_size != record.get('file_size', 0):
             return False, record
         
         # Deep check: checksum changed?
-        if current_checksum != record['checksum_sha256']:
+        if current_checksum != record.get('checksum_sha256', ''):
             return False, record
         
         # File unchanged
+        return True, record
+    
+    def is_file_unchanged_by_metadata(self, file_path: str, 
+                                     current_eTag: str = None, current_size: int = None) -> Tuple[bool, Optional[Dict]]:
+        """
+        Check if file has changed using server-side metadata (eTag, size).
+        
+        Args:
+            file_path: File path within SharePoint
+            current_eTag: Current Microsoft Graph eTag
+            current_size: Current file size
+            
+        Returns:
+            Tuple of (is_unchanged, file_record)
+        """
+        record = self.get_file_record(file_path)
+        
+        if not record:
+            return False, None  # New file
+        
+        # Check if eTag changed
+        if current_eTag and current_eTag != record.get('eTag', ''):
+            return False, record
+        
+        # Check if size changed
+        if current_size and current_size != record.get('file_size', 0):
+            return False, record
+        
+        # File unchanged based on metadata
         return True, record
     
     def start_backup_session(self, backup_type: str, site_id: str = None) -> int:

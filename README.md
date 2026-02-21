@@ -181,12 +181,12 @@ source .venv/bin/activate
 python dataverse_backup.py
 
 # Run SharePoint incremental backup
-python sharepoint_incremental_backup.py --type full  # First time
-python sharepoint_incremental_backup.py              # Subsequent runs
+python sharepoint_incremental_optimized.py --type full  # First time
+python sharepoint_incremental_optimized.py              # Subsequent runs
 
 # Run Exchange incremental backup
-python exchange_incremental_backup.py --type full    # First time
-python exchange_incremental_backup.py                # Subsequent runs
+python exchange_incremental_optimized.py --type full    # First time
+python exchange_incremental_optimized.py                # Subsequent runs
 ```
 
 ### Using UV with Unified .env File
@@ -196,12 +196,12 @@ python exchange_incremental_backup.py                # Subsequent runs
 uv run dataverse_backup.py
 
 # Run SharePoint incremental backup
-uv run sharepoint_incremental_backup.py --type full  # First time
-uv run sharepoint_incremental_backup.py              # Subsequent runs
+uv run sharepoint_incremental_optimized.py --type full  # First time
+uv run sharepoint_incremental_optimized.py              # Subsequent runs
 
 # Run Exchange incremental backup
-uv run exchange_incremental_backup.py --type full    # First time
-uv run exchange_incremental_backup.py                # Subsequent runs
+uv run exchange_incremental_optimized.py --type full    # First time
+uv run exchange_incremental_optimized.py                # Subsequent runs
 ```
 
 ### Legacy Usage with Separate .env Files
@@ -213,12 +213,12 @@ For backward compatibility, you can still use separate `.env.*` files:
 uv run --env-file .env.dataverse dataverse_backup.py
 
 # SharePoint Incremental Backup
-uv run --env-file .env.sharepoint sharepoint_incremental_backup.py --type full
-uv run --env-file .env.sharepoint sharepoint_incremental_backup.py
+uv run --env-file .env.sharepoint sharepoint_incremental_optimized.py --type full
+uv run --env-file .env.sharepoint sharepoint_incremental_optimized.py
 
 # Exchange/Outlook Incremental Backup
-uv run --env-file .env.exchange exchange_incremental_backup.py --type full
-uv run --env-file .env.exchange exchange_incremental_backup.py
+uv run --env-file .env.exchange exchange_incremental_optimized.py --type full
+uv run --env-file .env.exchange exchange_incremental_optimized.py
 ```
 
 ### Common Commands
@@ -226,34 +226,34 @@ uv run --env-file .env.exchange exchange_incremental_backup.py
 #### SharePoint Backup
 ```bash
 # First time: Full backup to populate checksum database
-python sharepoint_incremental_backup.py --type full
+python sharepoint_incremental_optimized.py --type full
 
 # Subsequent runs: Incremental backup (only changed files)
-python sharepoint_incremental_backup.py
+python sharepoint_incremental_optimized.py
 
 # View backup statistics
-python sharepoint_incremental_backup.py --stats
+python sharepoint_incremental_optimized.py --stats
 
 # Cleanup old records (keep last 90 days)
-python sharepoint_incremental_backup.py --cleanup 90
+python sharepoint_incremental_optimized.py --cleanup 90
 ```
 
 #### Exchange Backup
 ```bash
 # First time: Full backup
-python exchange_incremental_backup.py --type full
+python exchange_incremental_optimized.py --type full
 
 # Subsequent runs: Incremental backup
-python exchange_incremental_backup.py
+python exchange_incremental_optimized.py
 
 # View backup statistics
-python exchange_incremental_backup.py --stats
+python exchange_incremental_optimized.py --stats
 
 # Cleanup old records (keep last 90 days)
-python exchange_incremental_backup.py --cleanup 90
+python exchange_incremental_optimized.py --cleanup 90
 
 # Backup with specific options
-python exchange_incremental_backup.py \
+python exchange_incremental_optimized.py \
   --backup-dir backup/exchange \
   --max-emails 1000 \  # Optional: Limit to 1000 emails per user (0 = unlimited)
   --no-attachments \
@@ -303,7 +303,6 @@ python rebuild_databases.py \
 ├── OPTIMIZATION_README.md            # Performance optimization guide
 ├── PERFORMANCE_OPTIMIZATION.md       # SharePoint performance optimization details
 ├── rebuild_databases.py              # Database rebuild tool (offline reconstruction)
-├── sharepoint_incremental_backup.py  # SharePoint incremental backup script
 ├── sharepoint_incremental_optimized.py # Optimized SharePoint backup (15-30x faster)
 ├── .env                              # Unified environment configuration (NEW)
 ├── .env.dataverse.example            # Dataverse environment template
@@ -349,8 +348,8 @@ Creates organized directory structure:
 crontab -e
 
 # Add lines to run incremental backups daily at 2 AM
-0 2 * * * cd /path/to/microsoft-365-backup-tools && .venv/bin/python sharepoint_incremental_backup.py
-0 3 * * * cd /path/to/microsoft-365-backup-tools && .venv/bin/python exchange_incremental_backup.py
+0 2 * * * cd /path/to/microsoft-365-backup-tools && .venv/bin/python sharepoint_incremental_optimized.py
+0 3 * * * cd /path/to/microsoft-365-backup-tools && .venv/bin/python exchange_incremental_optimized.py
 0 4 * * 0 cd /path/to/microsoft-365-backup-tools && .venv/bin/python dataverse_backup.py
 ```
 
@@ -360,8 +359,8 @@ crontab -e
 crontab -e
 
 # Add lines to run incremental backups daily at 2 AM
-0 2 * * * cd /path/to/microsoft-365-backup-tools && uv run sharepoint_incremental_backup.py
-0 3 * * * cd /path/to/microsoft-365-backup-tools && uv run exchange_incremental_backup.py
+0 2 * * * cd /path/to/microsoft-365-backup-tools && uv run sharepoint_incremental_optimized.py
+0 3 * * * cd /path/to/microsoft-365-backup-tools && uv run exchange_incremental_optimized.py
 0 4 * * 0 cd /path/to/microsoft-365-backup-tools && uv run dataverse_backup.py
 ```
 
@@ -369,15 +368,15 @@ crontab -e
 
 #### Using Virtual Environment
 ```
-cmd /c "cd C:\path\to\microsoft-365-backup-tools && .venv\Scripts\python.exe sharepoint_incremental_backup.py"
-cmd /c "cd C:\path\to\microsoft-365-backup-tools && .venv\Scripts\python.exe exchange_incremental_backup.py"
+cmd /c "cd C:\path\to\microsoft-365-backup-tools && .venv\Scripts\python.exe sharepoint_incremental_optimized.py"
+cmd /c "cd C:\path\to\microsoft-365-backup-tools && .venv\Scripts\python.exe exchange_incremental_optimized.py"
 cmd /c "cd C:\path\to\microsoft-365-backup-tools && .venv\Scripts\python.exe dataverse_backup.py"
 ```
 
 #### Using UV
 ```
-cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run sharepoint_incremental_backup.py"
-cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run exchange_incremental_backup.py"
+cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run sharepoint_incremental_optimized.py"
+cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run exchange_incremental_optimized.py"
 cmd /c "cd C:\path\to\microsoft-365-backup-tools && uv run dataverse_backup.py"
 ```
 
@@ -410,7 +409,7 @@ By default, console output shows INFO level and above. To see more detailed logs
 
 ```bash
 # Run with environment variable to change log level
-LOGURU_LEVEL=TRACE python sharepoint_incremental_backup.py --help
+LOGURU_LEVEL=TRACE python sharepoint_incremental_optimized.py --help
 
 # Or modify the script to change the default level in logger.add()
 ```
@@ -418,12 +417,7 @@ LOGURU_LEVEL=TRACE python sharepoint_incremental_backup.py --help
 ### Example Log Output
 
 ```
-2026-02-16 11:16:45 | INFO    | __main__:main:658 - Loaded environment variables from .env file
-2026-02-16 11:16:45 | SUCCESS | __main__:_get_access_token:101 - Graph API authentication successful
-2026-02-16 11:16:46 | TRACE   | __main__:_process_file:400 - Processing file 'document.docx' (size: 1048576 bytes)
-2026-02-16 11:16:46 | DEBUG   | __main__:_process_file:420 - Skipped (unchanged): document.docx
-```
-
+2026-02-16 11:16:45 | INFO    |
 ## Troubleshooting
 
 ### Common Issues
