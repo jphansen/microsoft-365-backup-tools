@@ -76,7 +76,7 @@ Backup tools for Microsoft 365 services including Dataverse (Power Platform), Sh
 - **Verbose Mode**: Use `--verbose` flag to see detailed folder traversal progress
 
 ### Backup Cleanup Script (February 2026)
-- **SharePoint Backup Consolidation**: `sharepoint_cleanup_structur.py` - Consolidates multiple timestamped backup directories into a single "master" directory
+- **SharePoint Backup Consolidation**: `sharepoint_cleanup_structur.py` - Consolidates multiple timestamped backup directories into consolidated timestamp directories (format: consolidated_YYYYMMDD_HHMMSS)
 - **Newest Version Retention**: Keeps only the newest versions of files across multiple backup runs
 - **Folder Structure Preservation**: Maintains original folder hierarchy while removing duplicate timestamp directories
 - **Dry Run Mode**: Preview changes before making them
@@ -304,7 +304,7 @@ python rebuild_databases.py \
 
 #### SharePoint Backup Cleanup
 ```bash
-# Consolidate timestamped backup directories into master directories
+# Consolidate timestamped backup directories into consolidated timestamp directories
 python sharepoint_cleanup_structur.py --root-dir BACKUP
 
 # Dry run: Show what would be done without making changes

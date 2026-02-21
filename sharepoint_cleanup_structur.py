@@ -3,7 +3,8 @@
 SharePoint Backup Cleanup Script
 
 This script consolidates multiple timestamped backup directories into a single
-"master" directory, keeping only the newest versions of files.
+consolidated timestamp directory (format: consolidated_YYYYMMDD_HHMMSS), 
+keeping only the newest versions of files.
 
 Usage:
     python3 sharepoint_cleanup_structur.py [--root-dir ROOT_DIR] [--dry-run] [--verbose]
@@ -196,8 +197,11 @@ class SharePointBackupCleanup:
         self.stats['timestamp_dirs_found'] += len(timestamp_dirs)
         
         # Determine target directory name
-        # Use "master" as the consolidated directory name
-        target_dir_name = "master"
+        # Use a consolidated timestamp directory name instead of "master"
+        # Format: consolidated_YYYYMMDD_HHMMSS (using current time)
+        from datetime import datetime
+        consolidated_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        target_dir_name = f"consolidated_{consolidated_timestamp}"
         target_dir = site_dir / target_dir_name
         
         logger.info(f"  Found {len(timestamp_dirs)} timestamp directories")
@@ -341,7 +345,7 @@ class SharePointBackupCleanup:
 def main():
     """Command-line interface."""
     parser = argparse.ArgumentParser(
-        description='Consolidate SharePoint backup directories into master directories'
+        description='Consolidate SharePoint backup directories into consolidated timestamp directories'
     )
     
     parser.add_argument('--root-dir', default='BACKUP',
