@@ -67,6 +67,14 @@ Backup tools for Microsoft 365 services including Dataverse (Power Platform), Sh
 - **Enhanced Checksum Database**: `checksum_db_enhanced.py` - Extended database with eTag/cTag support and performance metrics
 - **Performance Documentation**: `OPTIMIZATION_README.md` - Detailed guide on performance optimizations
 
+### Deep Folder Structure Fix (February 2026)
+- **Iterative Folder Traversal**: Fixed issue with deep folder structures in SharePoint "Drives" libraries
+- **Breadth-First Search**: Replaced recursive approach with iterative BFS to handle unlimited folder depth
+- **No More Missing Files**: Files in deeply nested folders (e.g., "01-Administration/01-Dagsrapport/...") are now properly discovered
+- **Depth Limiting**: Safety limit of 20 levels to prevent infinite loops
+- **Progress Logging**: Shows progress during large folder scans
+- **Verbose Mode**: Use `--verbose` flag to see detailed folder traversal progress
+
 ### Unified Configuration (Earlier)
 - **Single `.env` File**: All services now use unified environment configuration
 - **Simplified Setup**: One configuration file for Dataverse, SharePoint, and Exchange

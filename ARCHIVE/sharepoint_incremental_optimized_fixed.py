@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Optimized SharePoint Incremental Backup
+Optimized SharePoint Incremental Backup - FIXED VERSION
 Leverages Microsoft Graph API server-side metadata (eTag, cTag, lastModifiedDateTime)
 to detect file changes without downloading files unnecessarily.
 """
@@ -63,8 +63,8 @@ class FileMetadata:
         )
 
 
-class OptimizedSharePointBackup:
-    """Optimized backup using server-side metadata for change detection."""
+class OptimizedSharePointBackupFixed:
+    """Optimized backup using server-side metadata for change detection - FIXED VERSION."""
     
     def __init__(self, client_id: str, client_secret: str, tenant_id: str, 
                  backup_dir: str = None, db_path: str = "backup_checksums.db"):
@@ -221,56 +221,48 @@ class OptimizedSharePointBackup:
         return filename[:200]
     
     def _get_files_with_metadata(self, site_id: str, drive_id: str, folder_id: str = "root") -> List[FileMetadata]:
-        """Get all files in a folder with metadata using iterative approach."""
+        """Get all files in a folder with metadata - FIXED VERSION with better error handling."""
         files = []
-        folders_to_process = [(folder_id, 0)]  # (folder_id, depth)
-        max_depth = 20  # Safety limit
+        url = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drives/{drive_id}/items/{folder_id}/children"
+        
+        params = {
+            '$select': 'id,name,size,eTag,cTag,lastModifiedDateTime,createdDateTime,webUrl,file,parentReference',
+            '$top': 200
+        }
         
         try:
-            while folders_to_process:
-                current_folder_id, depth = folders_to_process.pop(0)
+            page_count = 0
+            total_items = 0
+            while url:
+                response = self._make_graph_request(url, params=params)
+                if response.status_code != 200:
+                    logger.warning(f"Failed to get files from {url}: {response.status_code} - {response.text[:200]}")
+                    break
                 
-                if depth > max_depth:
-                    logger.warning(f"Max depth {max_depth} reached, skipping deeper folders")
-                    continue
+                data = response.json()
+                items = data.get('value', [])
+                page_count += 1
+                total_items += len(items)
                 
-                url = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drives/{drive_id}/items/{current_folder_id}/children"
+                for item in items:
+                    if 'file' in item:
+                        file_meta = FileMetadata.from_graph_data(item, drive_id)
+                        files.append(file_meta)
+                    elif 'folder' in item:
+                        subfolder_id = item.get('id')
+                        subfolder_files = self._get_files_with_metadata(site_id, drive_id, subfolder_id)
+                        files.extend(subfolder_files)
                 
-                params = {
-                    '$select': 'id,name,size,eTag,cTag,lastModifiedDateTime,createdDateTime,webUrl,file,folder,parentReference',
-                    '$top': 200
-                }
-                
-                # Process all pages for this folder
-                while url:
-                    response = self._make_graph_request(url, params=params)
-                    if response.status_code != 200:
-                        logger.warning(f"Failed to get folder contents: {response.status_code}")
-                        break
-                    
-                    data = response.json()
-                    items = data.get('value', [])
-                    
-                    for item in items:
-                        if 'file' in item:
-                            file_meta = FileMetadata.from_graph_data(item, drive_id)
-                            files.append(file_meta)
-                        elif 'folder' in item:
-                            subfolder_id = item.get('id')
-                            subfolder_name = item.get('name', 'Unknown')
-                            folders_to_process.append((subfolder_id, depth + 1))
-                    
-                    url = data.get('@odata.nextLink')
-                    params = {}  # Clear params after first request
-                
-                # Log progress for large folders
-                if len(folders_to_process) > 0 and len(folders_to_process) % 10 == 0:
-                    logger.debug(f"  Processed {len(files)} files, {len(folders_to_process)} folders remaining")
+                url = data.get('@odata.nextLink')
+                params = {}
+            
+            if page_count > 0:
+                logger.debug(f"Scanned {page_count} pages, {total_items} items, found {len(files)} files in folder {folder_id}")
             
             return files
             
         except Exception as e:
-            logger.warning(f"Error getting files: {str(e)}")
+            logger.warning(f"Error getting files from site {site_id}, drive {drive_id}, folder {folder_id}: {str(e)}")
             return []
     
     def backup_all_sites(self, backup_type: str = 'incremental', max_workers: int = 5):
@@ -380,10 +372,14 @@ class OptimizedSharePointBackup:
         try:
             response = self._make_graph_request(drives_url)
             if response.status_code == 200:
-                return response.json().get('value', [])
-            return []
+                drives = response.json().get('value', [])
+                logger.debug(f"Found {len(drives)} drives for site {site_id}")
+                return drives
+            else:
+                logger.warning(f"Failed to get drives for site {site_id}: {response.status_code} - {response.text[:200]}")
+                return []
         except Exception as e:
-            logger.warning(f"Error getting drives: {str(e)}")
+            logger.warning(f"Error getting drives for site {site_id}: {str(e)}")
             return []
     
     def _backup_drive(self, site_id: str, drive_id: str, drive_name: str, site_path: Path, backup_type: str):
@@ -396,48 +392,25 @@ class OptimizedSharePointBackup:
         files = self._get_files_with_metadata(site_id, drive_id)
         logger.info(f"    Found {len(files)} files")
         
-        if not files:
-            logger.info(f"    No files found in '{drive_name}'")
-            return
-        
         # Process files
         changed_files = []
         unchanged_files = []
         
-        # Log first few files being processed
-        sample_size = min(5, len(files))
-        for i, file_meta in enumerate(files[:sample_size]):
-            logger.debug(f"      Sample file {i+1}: {file_meta.name} ({file_meta.size:,} bytes)")
-        
         for file_meta in files:
             if backup_type == 'full':
                 changed_files.append(file_meta)
-                logger.debug(f"      Will backup (full): {file_meta.name}")
             elif self._has_file_changed(file_meta):
                 changed_files.append(file_meta)
-                logger.debug(f"      Changed: {file_meta.name}")
             else:
                 unchanged_files.append(file_meta)
                 self.stats['files_skipped'] += 1
                 self.stats['bytes_saved'] += file_meta.size
-                # Log only first few skipped files to avoid spam
-                if len(unchanged_files) <= 5:
-                    logger.debug(f"      Unchanged (skipping): {file_meta.name}")
         
         logger.info(f"    Changed: {len(changed_files)}, Unchanged: {len(unchanged_files)}")
         
-        if unchanged_files:
-            logger.info(f"    Skipping {len(unchanged_files)} unchanged files")
-            if len(unchanged_files) > 5:
-                logger.info(f"      (showing first 5): {', '.join(f.name for f in unchanged_files[:5])}...")
-        
         # Download changed files
-        if changed_files:
-            logger.info(f"    Downloading {len(changed_files)} changed files...")
-            for file_meta in changed_files:
-                self._download_file(site_id, drive_id, file_meta, drive_path)
-        else:
-            logger.info(f"    No files need downloading (all unchanged)")
+        for file_meta in changed_files:
+            self._download_file(site_id, drive_id, file_meta, drive_path)
     
     def _print_summary(self):
         """Print backup summary."""
@@ -470,65 +443,4 @@ def main():
         load_dotenv()
         logger.info("Loaded environment variables from .env file")
     except ImportError:
-        logger.warning("python-dotenv not installed. Using system environment variables.")
-    except Exception as e:
-        logger.warning(f"Failed to load .env file: {str(e)}")
-    
-    parser = argparse.ArgumentParser(
-        description='Optimized SharePoint Incremental Backup'
-    )
-
-    parser.add_argument('--type', choices=['full', 'incremental'],
-                       default='incremental',
-                       help='Backup type (default: incremental)')
-
-    parser.add_argument('--backup-dir', default=None,
-                       help='Backup directory (overrides SHAREPOINT_BACKUP_DIR and BACKUP_DIR)')
-
-    parser.add_argument('--db-path', default='backup_checksums.db',
-                       help='Checksum database path (default: backup_checksums.db)')
-
-    parser.add_argument('--workers', type=int, default=5,
-                       help='Maximum parallel downloads (default: 5)')
-
-    parser.add_argument('--verbose', '-v', action='store_true',
-                       help='Enable verbose (DEBUG) logging')
-
-    args = parser.parse_args()
-
-    # Set logging level based on verbose flag
-    if args.verbose:
-        logger.remove()
-        logger.add(
-            sys.stdout,
-            format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>",
-            level="DEBUG",
-            colorize=True
-        )
-        logger.info("DEBUG logging enabled")
-
-    # Get credentials from environment
-    CLIENT_ID = os.environ.get('SHAREPOINT_CLIENT_ID')
-    CLIENT_SECRET = os.environ.get('SHAREPOINT_CLIENT_SECRET')
-    TENANT_ID = os.environ.get('SHAREPOINT_TENANT_ID')
-
-    if not all([CLIENT_ID, CLIENT_SECRET, TENANT_ID]):
-        logger.error("Missing credentials! Set SHAREPOINT_CLIENT_ID, SHAREPOINT_CLIENT_SECRET, SHAREPOINT_TENANT_ID")
-        logger.error("Example: export SHAREPOINT_TENANT_ID='your-tenant-id'")
-        sys.exit(1)
-
-    try:
-        backup = OptimizedSharePointBackup(
-            CLIENT_ID, CLIENT_SECRET, TENANT_ID,
-            args.backup_dir, args.db_path
-        )
-
-        backup.backup_all_sites(args.type, args.workers)
-
-    except Exception as e:
-        logger.error(f"Backup failed: {str(e)}")
-        sys.exit(1)
-
-
-if __name__ == "__main__":
-    main()
+        logger
