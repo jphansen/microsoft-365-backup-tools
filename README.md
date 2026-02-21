@@ -75,6 +75,14 @@ Backup tools for Microsoft 365 services including Dataverse (Power Platform), Sh
 - **Progress Logging**: Shows progress during large folder scans
 - **Verbose Mode**: Use `--verbose` flag to see detailed folder traversal progress
 
+### Backup Cleanup Script (February 2026)
+- **SharePoint Backup Consolidation**: `sharepoint_cleanup_structur.py` - Consolidates multiple timestamped backup directories into a single "master" directory
+- **Newest Version Retention**: Keeps only the newest versions of files across multiple backup runs
+- **Folder Structure Preservation**: Maintains original folder hierarchy while removing duplicate timestamp directories
+- **Dry Run Mode**: Preview changes before making them
+- **Optional Cleanup**: Optionally remove old timestamp directories after consolidation
+- **Flexible Configuration**: Can process single sites or entire backup trees
+
 ### Unified Configuration (Earlier)
 - **Single `.env` File**: All services now use unified environment configuration
 - **Simplified Setup**: One configuration file for Dataverse, SharePoint, and Exchange
@@ -294,6 +302,24 @@ python rebuild_databases.py \
   --verbose
 ```
 
+#### SharePoint Backup Cleanup
+```bash
+# Consolidate timestamped backup directories into master directories
+python sharepoint_cleanup_structur.py --root-dir BACKUP
+
+# Dry run: Show what would be done without making changes
+python sharepoint_cleanup_structur.py --root-dir BACKUP --dry-run
+
+# Consolidate and remove old timestamp directories (keeping 1 newest)
+python sharepoint_cleanup_structur.py --root-dir BACKUP --cleanup-old
+
+# Consolidate and keep 3 newest timestamp directories
+python sharepoint_cleanup_structur.py --root-dir BACKUP --cleanup-old --keep-newest 3
+
+# Verbose output with detailed progress
+python sharepoint_cleanup_structur.py --root-dir BACKUP --verbose
+```
+
 ## Project Structure
 
 ```
@@ -311,8 +337,10 @@ python rebuild_databases.py \
 ├── OPTIMIZATION_README.md            # Performance optimization guide
 ├── PERFORMANCE_OPTIMIZATION.md       # SharePoint performance optimization details
 ├── rebuild_databases.py              # Database rebuild tool (offline reconstruction)
+├── sharepoint_cleanup_structur.py    # SharePoint backup consolidation script (NEW)
 ├── sharepoint_incremental_optimized.py # Optimized SharePoint backup (15-30x faster)
-├── .env                              # Unified environment configuration (NEW)
+├── sundbusserne.env                  # Example environment configuration (NEW)
+├── .env                              # Unified environment configuration
 ├── .env.dataverse.example            # Dataverse environment template
 ├── .env.example                      # General environment template
 ├── .env.exchange                     # Exchange environment configuration
@@ -323,8 +351,6 @@ python rebuild_databases.py \
 ├── pyproject.toml                    # Project configuration (UV)
 ├── README.md                         # This file
 ├── requirements.txt                  # Python requirements
-├── backup_checksums.db               # SharePoint checksum database file
-├── backup_checksums_exchange.db      # Exchange checksum database file
 └── uv.lock                           # UV lock file
 ```
 

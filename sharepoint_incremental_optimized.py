@@ -47,6 +47,8 @@ class FileMetadata:
     createdDateTime: str
     webUrl: str
     file_path: str  # /drives/{driveId}/items/{itemId}
+    parent_reference: Dict[str, Any] = None
+    relative_path: Path = None
     
     @classmethod
     def from_graph_data(cls, data: Dict[str, Any], drive_id: str) -> 'FileMetadata':
@@ -59,7 +61,8 @@ class FileMetadata:
             lastModifiedDateTime=data.get('lastModifiedDateTime', ''),
             createdDateTime=data.get('createdDateTime', ''),
             webUrl=data.get('webUrl', ''),
-            file_path=f"/drives/{drive_id}/items/{data.get('id')}"
+            file_path=f"/drives/{drive_id}/items/{data.get('id')}",
+            parent_reference=data.get('parentReference', {})
         )
 
 
@@ -178,7 +181,15 @@ class OptimizedSharePointBackup:
                 logger.warning(f"Failed to download {file_meta.name}: {response.status_code}")
                 return False
             
-            file_path = local_path / self._sanitize_filename(file_meta.name)
+            # Create the full local path including folder hierarchy
+            if file_meta.relative_path:
+                # Create the folder structure
+                full_path = local_path / file_meta.relative_path
+                full_path.mkdir(parents=True, exist_ok=True)
+                file_path = full_path / self._sanitize_filename(file_meta.name)
+            else:
+                # Fallback to root directory
+                file_path = local_path / self._sanitize_filename(file_meta.name)
             
             # Calculate checksum while downloading
             sha256_hash = hashlib.sha256()
@@ -223,12 +234,15 @@ class OptimizedSharePointBackup:
     def _get_files_with_metadata(self, site_id: str, drive_id: str, folder_id: str = "root") -> List[FileMetadata]:
         """Get all files in a folder with metadata using iterative approach."""
         files = []
+        # Store folder paths: folder_id -> relative_path
+        folder_paths = {folder_id: Path("")}
         folders_to_process = [(folder_id, 0)]  # (folder_id, depth)
-        max_depth = 20  # Safety limit
+        max_depth = 50  # Increased safety limit
         
         try:
             while folders_to_process:
                 current_folder_id, depth = folders_to_process.pop(0)
+                current_folder_path = folder_paths.get(current_folder_id, Path(""))
                 
                 if depth > max_depth:
                     logger.warning(f"Max depth {max_depth} reached, skipping deeper folders")
@@ -252,13 +266,19 @@ class OptimizedSharePointBackup:
                     items = data.get('value', [])
                     
                     for item in items:
+                        item_name = item.get('name', 'Unknown')
+                        item_id = item.get('id')
+                        
                         if 'file' in item:
                             file_meta = FileMetadata.from_graph_data(item, drive_id)
+                            # Store the relative path in the file metadata
+                            file_meta.relative_path = current_folder_path
                             files.append(file_meta)
                         elif 'folder' in item:
-                            subfolder_id = item.get('id')
-                            subfolder_name = item.get('name', 'Unknown')
-                            folders_to_process.append((subfolder_id, depth + 1))
+                            # Calculate subfolder path
+                            subfolder_path = current_folder_path / self._sanitize_filename(item_name)
+                            folder_paths[item_id] = subfolder_path
+                            folders_to_process.append((item_id, depth + 1))
                     
                     url = data.get('@odata.nextLink')
                     params = {}  # Clear params after first request
