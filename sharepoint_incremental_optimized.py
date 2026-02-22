@@ -11,11 +11,14 @@ import json
 import argparse
 import hashlib
 import requests
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from loguru import logger
 from checksum_db import BackupChecksumDB
@@ -100,6 +103,9 @@ class OptimizedSharePointBackup:
         
         self.db = BackupChecksumDB(db_path)
         
+        # Setup HTTP session with retry logic
+        self._setup_session()
+        
         self.access_token = self._get_access_token()
         self.token_obtained_time = datetime.now()
         self.headers = {
@@ -120,6 +126,28 @@ class OptimizedSharePointBackup:
         logger.info(f"Backup directory: {self.backup_dir}")
         logger.info(f"Database: {db_path}")
     
+    def _setup_session(self):
+        """Setup HTTP session with retry logic."""
+        # Configure retry strategy for network/DNS failures and HTTP 5xx errors
+        retry_strategy = Retry(
+            total=3,  # Maximum number of retries
+            backoff_factor=1,  # Exponential backoff: 1, 2, 4 seconds
+            status_forcelist=[429, 500, 502, 503, 504],  # Retry on rate limit and server errors
+            allowed_methods=["GET", "POST", "PUT", "DELETE"],
+            raise_on_status=False
+        )
+        
+        # Create adapter with retry strategy
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        
+        # Create session and mount adapter
+        self.session = requests.Session()
+        self.session.mount("https://", adapter)
+        self.session.mount("http://", adapter)
+        
+        # Set default timeout
+        self.request_timeout = 30
+    
     def _get_access_token(self) -> str:
         """Get Microsoft Graph access token."""
         token_url = f"https://login.microsoftonline.com/{self.tenant_id}/oauth2/v2.0/token"
@@ -130,7 +158,8 @@ class OptimizedSharePointBackup:
             'scope': 'https://graph.microsoft.com/.default'
         }
         
-        response = requests.post(token_url, data=token_data, timeout=30)
+        # Use session for token request as well
+        response = self.session.post(token_url, data=token_data, timeout=self.request_timeout)
         response.raise_for_status()
         return response.json()['access_token']
     
@@ -144,19 +173,30 @@ class OptimizedSharePointBackup:
             self.headers['Authorization'] = f'Bearer {self.access_token}'
     
     def _make_graph_request(self, url: str, method: str = 'GET', **kwargs):
-        """Make Graph API request with token refresh."""
+        """Make Graph API request with token refresh and retry logic."""
         self._refresh_token_if_needed()
         
-        response = requests.request(method, url, headers=self.headers, **kwargs)
+        # Add timeout if not specified
+        if 'timeout' not in kwargs:
+            kwargs['timeout'] = self.request_timeout
         
-        if response.status_code == 401:
-            logger.warning("Token expired, refreshing...")
-            self.access_token = self._get_access_token()
-            self.token_obtained_time = datetime.now()
-            self.headers['Authorization'] = f'Bearer {self.access_token}'
-            response = requests.request(method, url, headers=self.headers, **kwargs)
-        
-        return response
+        try:
+            response = self.session.request(method, url, headers=self.headers, **kwargs)
+            
+            if response.status_code == 401:
+                logger.warning("Token expired, refreshing...")
+                self.access_token = self._get_access_token()
+                self.token_obtained_time = datetime.now()
+                self.headers['Authorization'] = f'Bearer {self.access_token}'
+                
+                # Retry the request with new token
+                response = self.session.request(method, url, headers=self.headers, **kwargs)
+            
+            return response
+            
+        except requests.exceptions.RequestException as e:
+            logger.warning(f"Graph API request failed: {str(e)}")
+            raise
     
     def _has_file_changed(self, file_meta: FileMetadata) -> bool:
         """Check if file has changed using server-side metadata."""
